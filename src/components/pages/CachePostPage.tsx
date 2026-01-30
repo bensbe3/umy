@@ -226,7 +226,6 @@ SET role = 'super_admin',
  */
 function ContentManagementInterface() {
   const { user, appUser } = useAuth();
-  const [activeTab, setActiveTab] = useState<'actualites' | 'articles' | 'contacts'>('actualites');
   const [actualites, setActualites] = useState<Actualite[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [contactSubmissions, setContactSubmissions] = useState<ContactSubmission[]>([]);
@@ -252,6 +251,19 @@ function ContentManagementInterface() {
   const canManageArticles = isEditor || hasFullAccess;
   const canViewContacts = hasFullAccess;
 
+  const [activeTab, setActiveTab] = useState<'actualites' | 'articles' | 'contacts'>('actualites');
+  
+  // Set default tab based on user permissions when appUser loads
+  useEffect(() => {
+    if (canManageActualites) {
+      setActiveTab('actualites');
+    } else if (canManageArticles) {
+      setActiveTab('articles');
+    } else if (canViewContacts) {
+      setActiveTab('contacts');
+    }
+  }, [canManageActualites, canManageArticles, canViewContacts]);
+
   // Commission info
   const commissions = [
     { id: 'ir' as const, name: 'International Relations', color: '#0ea5e9' },
@@ -263,6 +275,22 @@ function ContentManagementInterface() {
     appUser.commissions_role === 'full'
       ? commissions
       : commissions.filter(c => c.id === appUser.commissions_role);
+
+  // Debug permissions
+  useEffect(() => {
+    console.log('=== ContentManagementInterface Permissions ===');
+    console.log('appUser:', appUser);
+    console.log('isEditor:', isEditor);
+    console.log('isSuperAdmin:', isSuperAdmin);
+    console.log('hasFullAccess:', hasFullAccess);
+    console.log('canManageActualites:', canManageActualites);
+    console.log('canManageArticles:', canManageArticles);
+    console.log('canViewContacts:', canViewContacts);
+    console.log('activeTab:', activeTab);
+    console.log('actualites.length:', actualites.length);
+    console.log('articles.length:', articles.length);
+    console.log('===========================================');
+  }, [appUser, canManageActualites, canManageArticles, canViewContacts, activeTab, actualites.length, articles.length]);
 
   // Fetch data on mount
   useEffect(() => {
@@ -499,16 +527,54 @@ function ContentManagementInterface() {
             </div>
           )}
 
-          {/* Tabs - Only show Contact Submissions for full access admins */}
-          {canViewContacts && (
+          {/* Tabs - Always show if user has any permissions (even when editor is open, user can switch tabs) */}
+          {!showActualiteEditor && !showArticleEditor && (canManageActualites || canManageArticles || canViewContacts) && (
             <div className="content-tabs">
-              <button
-                className={activeTab === 'contacts' ? 'active' : ''}
-                onClick={() => setActiveTab('contacts')}
-              >
-                <Mail size={16} />
-                Contact Submissions ({contactSubmissions.length})
-              </button>
+              {canManageActualites && (
+                <button
+                  className={activeTab === 'actualites' ? 'active' : ''}
+                  onClick={() => {
+                    setActiveTab('actualites');
+                    setShowActualiteEditor(false);
+                    setShowArticleEditor(false);
+                    setEditingActualite(null);
+                    setEditingArticle(null);
+                  }}
+                >
+                  <Newspaper size={16} />
+                  Actualités ({actualites.length})
+                </button>
+              )}
+              {canManageArticles && (
+                <button
+                  className={activeTab === 'articles' ? 'active' : ''}
+                  onClick={() => {
+                    setActiveTab('articles');
+                    setShowActualiteEditor(false);
+                    setShowArticleEditor(false);
+                    setEditingActualite(null);
+                    setEditingArticle(null);
+                  }}
+                >
+                  <FileText size={16} />
+                  DecryptMundi ({articles.length})
+                </button>
+              )}
+              {canViewContacts && (
+                <button
+                  className={activeTab === 'contacts' ? 'active' : ''}
+                  onClick={() => {
+                    setActiveTab('contacts');
+                    setShowActualiteEditor(false);
+                    setShowArticleEditor(false);
+                    setEditingActualite(null);
+                    setEditingArticle(null);
+                  }}
+                >
+                  <Mail size={16} />
+                  Contact Submissions ({contactSubmissions.length})
+                </button>
+              )}
             </div>
           )}
 
@@ -566,10 +632,110 @@ function ContentManagementInterface() {
               }}
             />
           ) : (
-            /* Empty state - show message to create post */
-            <div className="no-posts">
-              <FileText size={48} />
-              <p>Click "Create Post" to start creating content.</p>
+            /* Posts Lists */
+            <div className="posts-list">
+              {/* Actualités Tab */}
+              {activeTab === 'actualites' && canManageActualites && (
+                actualites.length === 0 ? (
+                  <div className="no-posts">
+                    <Newspaper size={48} />
+                    <p>No actualités yet. Create your first post!</p>
+                    <button onClick={handleNewPost} className="new-post-button">
+                      <Plus size={18} />
+                      Create First Post
+                    </button>
+                  </div>
+                ) : (
+                  <div className="posts-grid">
+                    {actualites.map((actualite) => {
+                      const commission = commissions.find(c => c.id === actualite.commission_id);
+                      const canEdit = hasFullAccess || actualite.commission_id === appUser?.commissions_role;
+                      
+                      return (
+                        <div key={actualite.id} className="post-card">
+                          <div className="post-commission-badge" style={{ backgroundColor: commission?.color }}>
+                            {commission?.name || actualite.commission_id.toUpperCase()}
+                          </div>
+                          <div className="post-status-badge">{actualite.status}</div>
+                          <h3>{actualite.title}</h3>
+                          <div
+                            className="post-preview"
+                            dangerouslySetInnerHTML={{
+                              __html: actualite.content.substring(0, 150) + '...'
+                            }}
+                          />
+                          {canEdit && (
+                            <div className="post-actions">
+                              <button onClick={() => handleEditActualite(actualite)} className="action-button edit">
+                                <Edit size={16} />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteActualite(actualite.id, actualite.commission_id)}
+                                className="action-button delete"
+                              >
+                                <Trash2 size={16} />
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )
+              )}
+
+              {/* Articles Tab */}
+              {activeTab === 'articles' && canManageArticles && (
+                articles.length === 0 ? (
+                  <div className="no-posts">
+                    <FileText size={48} />
+                    <p>No articles yet. Create your first article!</p>
+                    <button onClick={handleNewPost} className="new-post-button">
+                      <Plus size={18} />
+                      Create First Article
+                    </button>
+                  </div>
+                ) : (
+                  <div className="posts-grid">
+                    {articles.map((article) => {
+                      const canEdit = hasFullAccess || article.author_id === user?.id;
+                      
+                      return (
+                        <div key={article.id} className="post-card">
+                          <div className="post-status-badge">{article.status}</div>
+                          <h3>{article.title}</h3>
+                          {article.excerpt && <p className="post-preview">{article.excerpt}</p>}
+                          {canEdit && (
+                            <div className="post-actions">
+                              <button onClick={() => handleEditArticle(article)} className="action-button edit">
+                                <Edit size={16} />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteArticle(article.id, article.author_id)}
+                                className="action-button delete"
+                              >
+                                <Trash2 size={16} />
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )
+              )}
+
+              {/* Default view when no tabs match */}
+              {!canManageActualites && !canManageArticles && !canViewContacts && (
+                <div className="no-posts">
+                  <FileText size={48} />
+                  <p>No content access. Please contact an administrator.</p>
+                </div>
+              )}
             </div>
           )}
         </div>

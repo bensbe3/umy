@@ -12,9 +12,6 @@ import { DecryptMundiHomepage } from '../DecryptMundiHomepage';
 import './HomePage.css';
 import { timelineImages } from '../images';
 
-// Import hero image - using one from images folder
-import heroImage from '../images/menara.jpg';
-
 
 export function HomePage() {
   const commissions = [
@@ -85,8 +82,8 @@ export function HomePage() {
       <section className="hero-section">
         <div className="hero-overlay">
           <ImageWithFallback
-            src={heroImage}
-            alt="United Moroccan Youth"
+            src="images/menara.jpg"
+            alt="Menara"
             className="hero-image"
             fetchPriority="high"
             loading="eager"
