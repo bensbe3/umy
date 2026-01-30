@@ -1,0 +1,42 @@
+/* PixelCard.css - Transparent Glass Effect */
+
+.pixel-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pixel-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  user-select: none;
+}
+
+/* Transparent glass effect when not hovered */
+.pixel-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(2, 44, 34, 0.3), transparent 70%);
+  opacity: 0;
+  transition: opacity 600ms ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.pixel-card:hover::before,
+.pixel-card:focus-within::before {
+  opacity: 1;
+}
+
+/* Ensure content is above canvas */
+.pixel-card > *:not(.pixel-canvas) {
+  position: relative;
+  z-index: 2;
+}

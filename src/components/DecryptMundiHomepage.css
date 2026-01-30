@@ -1,0 +1,320 @@
+/* DecryptMundi Homepage Section */
+
+.decryptmundi-homepage-section {
+    position: relative;
+    z-index: 2;
+    background: var(--color-dark-green, #022c22);
+    padding: calc(var(--spacing-3xl, 3.5rem) * 2) 0;
+    width: 100%;
+  }
+  
+  .decryptmundi-homepage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: calc(var(--spacing-3xl, 3.5rem) * 1.5);
+    gap: var(--spacing-2xl, 2.5rem);
+  }
+  
+  .btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm, 0.625rem);
+    padding: 0.875rem 1.75rem;
+    background: transparent;
+    color: var(--color-text-beige, #f5e6d3);
+    border: 2px solid var(--color-text-beige, #f5e6d3);
+    border-radius: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition, 300ms ease);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  .btn-view-all:hover {
+    background: rgba(245, 230, 211, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .btn-view-all .btn-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  /* Slider Wrapper with Navigation */
+  .decryptmundi-slider-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  
+  /* Navigation Arrows */
+  .slider-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 3rem;
+    height: 3rem;
+    background: var(--color-dark-green, #022c22);
+    border: 3px solid rgba(245, 230, 211, 0.3);
+    color: var(--color-text-beige, #f5e6d3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition, 300ms ease);
+    border-radius: 0;
+  }
+  
+  .slider-nav-arrow:hover:not(:disabled) {
+    border-color: var(--color-text-beige, #f5e6d3);
+    background: rgba(245, 230, 211, 0.1);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .slider-nav-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  .slider-nav-left {
+    left: -1.5rem;
+  }
+  
+  .slider-nav-right {
+    right: -1.5rem;
+  }
+  
+  .slider-nav-arrow svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  /* Articles Slider */
+  .decryptmundi-slider {
+    display: flex;
+    gap: var(--spacing-xl, 1.75rem);
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: var(--spacing-md, 0.875rem) 0;
+  }
+  
+  .decryptmundi-slider::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Article Card - Similar to ActualitesSection */
+  .decryptmundi-homepage-card {
+    position: relative;
+    flex: 0 0 320px;
+    width: 320px;
+    height: 400px;
+    border: 3px solid rgba(245, 230, 211, 0.2);
+    background: transparent;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition, 300ms ease);
+    text-decoration: none;
+    border-radius: 0;
+  }
+  
+  .decryptmundi-homepage-card:hover {
+    border-color: rgba(245, 230, 211, 0.4);
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Image Background */
+  .card-image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .decryptmundi-homepage-card:hover .card-image {
+    transform: scale(1.05);
+  }
+  
+  .card-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: rgba(245, 230, 211, 0.1);
+  }
+  
+  .card-gradient-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70%;
+    background: linear-gradient(
+      to top,
+      rgba(2, 44, 34, 0.95) 0%,
+      rgba(2, 44, 34, 0.7) 50%,
+      transparent 100%
+    );
+  }
+  
+  /* Content Overlay */
+  .card-content-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--spacing-xl, 1.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm, 0.625rem);
+    z-index: 2;
+  }
+  
+  .card-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #8B0000;
+    color: var(--color-text-beige, #f5e6d3);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    align-self: flex-start;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+  }
+  
+  .card-title {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-text-beige, #f5e6d3);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md, 0.875rem);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.75rem;
+    color: var(--color-text-pink-beige, #f0d9c7);
+    margin-top: var(--spacing-sm, 0.625rem);
+  }
+  
+  .card-date {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  
+  .card-date svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .card-read-time::before {
+    content: '•';
+    margin-right: var(--spacing-sm, 0.625rem);
+  }
+  
+  /* Loading Spinner */
+  .loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid rgba(245, 230, 211, 0.2);
+    border-top-color: #8B0000;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .decryptmundi-homepage-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-xl, 1.75rem);
+    }
+  
+    .btn-view-all {
+      align-self: center;
+    }
+  
+    .slider-nav-left,
+    .slider-nav-right {
+      display: none;
+    }
+  
+    .decryptmundi-homepage-card {
+      flex: 0 0 300px;
+      width: 300px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .decryptmundi-homepage-section {
+      padding: var(--spacing-2xl, 2.5rem) 0;
+    }
+  
+    .decryptmundi-homepage-card {
+      flex: 0 0 280px;
+      width: 280px;
+      border-width: 2px;
+    }
+  
+    .card-content-overlay {
+      padding: var(--spacing-lg, 1.25rem);
+    }
+  
+    .slider-nav-arrow {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-width: 2px;
+    }
+  
+    .slider-nav-arrow svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .decryptmundi-homepage-card {
+      flex: 0 0 260px;
+      width: 260px;
+      height: 350px;
+    }
+  
+    .card-title {
+      font-size: 1rem;
+    }
+  
+    .card-meta {
+      font-size: 0.6875rem;
+    }
+  }

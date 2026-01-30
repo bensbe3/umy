@@ -1,0 +1,502 @@
+/**
+ * EDITORIAL DESIGN SYSTEM
+ * Inspired by The New York Times, TelQuel, and academic press platforms
+ * Sharp edges, professional typography, editorial hierarchy
+ */
+
+/* ============================================
+   TYPOGRAPHY SYSTEM
+   ============================================ */
+
+/* Import Professional Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Editorial Typography */
+  --font-headline: 'Playfair Display', 'Libre Baskerville', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'IBM Plex Serif', Georgia, serif;
+  
+  /* UMY Official Colors (Extended) */
+  --umy-primary: #022c22;
+  --umy-gold: #d4af37;
+  --umy-cream: #f5e6d3;
+  
+  /* Editorial Colors */
+  --editorial-black: #1a1a1a;
+  --editorial-charcoal: #2c2c2c;
+  --editorial-grey: #4a4a4a;
+  --editorial-light-grey: #767676;
+  --editorial-divider: #e0e0e0;
+  --editorial-bg: #ffffff;
+  --editorial-bg-alt: #fafafa;
+  
+  /* Commission Colors (Sharp, Editorial) */
+  --ir-primary: #1a5490;
+  --ir-dark: #0d3a6a;
+  --mp-primary: #8b2635;
+  --mp-dark: #5a1722;
+  --sd-primary: #2d7a3e;
+  --sd-dark: #1b4d26;
+  
+  /* Accent Colors */
+  --accent-red: #c62828;
+  --accent-blue: #1565c0;
+  --accent-green: #2e7d32;
+  
+  /* Spacing Scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  
+  /* Border Radius: SHARP EDGES ONLY */
+  --radius-none: 0;
+  --radius-sharp: 0;
+  
+  /* Shadows (subtle, editorial) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   GLOBAL EDITORIAL STYLES
+   ============================================ */
+
+.editorial-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.editorial-wide {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.editorial-narrow {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+/* ============================================
+   TYPOGRAPHY CLASSES
+   ============================================ */
+
+/* Headlines */
+.editorial-headline-xl {
+  font-family: var(--font-headline);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--editorial-black);
+  margin: 0 0 var(--space-md);
+}
+
+.editorial-headline-lg {
+  font-family: var(--font-headline);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--editorial-black);
+  margin: 0 0 var(--space-md);
+}
+
+.editorial-headline-md {
+  font-family: var(--font-headline);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--editorial-black);
+  margin: 0 0 var(--space-sm);
+}
+
+.editorial-headline-sm {
+  font-family: var(--font-headline);
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--editorial-black);
+  margin: 0 0 var(--space-sm);
+}
+
+/* Body Text */
+.editorial-body-lg {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: var(--editorial-charcoal);
+  margin: 0 0 var(--space-md);
+}
+
+.editorial-body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--editorial-charcoal);
+  margin: 0 0 var(--space-sm);
+}
+
+.editorial-body-sm {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--editorial-grey);
+}
+
+/* Meta Text */
+.editorial-meta {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--editorial-light-grey);
+}
+
+.editorial-byline {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--editorial-grey);
+  font-style: italic;
+}
+
+/* ============================================
+   ARTICLE CARD STYLES (Press Format)
+   ============================================ */
+
+.article-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--editorial-bg);
+  border: 1px solid var(--editorial-divider);
+  border-radius: var(--radius-none);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.article-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.article-card-featured {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  border: 2px solid var(--editorial-black);
+}
+
+.article-card-image {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--radius-none);
+}
+
+.article-card-featured .article-card-image {
+  height: 100%;
+  min-height: 400px;
+}
+
+.article-card-content {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.article-card-category {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--editorial-black);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-none);
+  align-self: flex-start;
+}
+
+.article-card-title {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--editorial-black);
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.article-card:hover .article-card-title {
+  color: var(--umy-primary);
+}
+
+.article-card-featured .article-card-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.article-card-excerpt {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--editorial-grey);
+  margin: 0;
+}
+
+.article-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--editorial-divider);
+  margin-top: auto;
+}
+
+.article-card-author {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--editorial-black);
+}
+
+.article-card-date {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--editorial-light-grey);
+}
+
+.article-card-read-time {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--editorial-light-grey);
+  margin-left: auto;
+}
+
+/* ============================================
+   ACTUALITÉ CARD STYLES (Press Format)
+   ============================================ */
+
+.actualite-card {
+  background: white;
+  border: 1px solid var(--editorial-divider);
+  border-radius: var(--radius-none);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.actualite-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--editorial-grey);
+}
+
+.actualite-card-ir { border-left: 4px solid var(--ir-primary); }
+.actualite-card-mp { border-left: 4px solid var(--mp-primary); }
+.actualite-card-sd { border-left: 4px solid var(--sd-primary); }
+
+.actualite-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.actualite-card-content {
+  padding: var(--space-lg);
+}
+
+.actualite-card-commission {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: white;
+  border-radius: var(--radius-none);
+  margin-bottom: var(--space-sm);
+}
+
+.actualite-card-commission-ir { background: var(--ir-primary); }
+.actualite-card-commission-mp { background: var(--mp-primary); }
+.actualite-card-commission-sd { background: var(--sd-primary); }
+
+.actualite-card-title {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--editorial-black);
+  margin: 0 0 var(--space-sm);
+}
+
+.actualite-card-excerpt {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--editorial-grey);
+  margin: 0 0 var(--space-sm);
+}
+
+.actualite-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--editorial-divider);
+}
+
+/* ============================================
+   ARTICLE LAYOUT GRIDS
+   ============================================ */
+
+.editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--space-xl);
+  margin: var(--space-xl) 0;
+}
+
+.editorial-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xl);
+}
+
+.editorial-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+@media (max-width: 1024px) {
+  .editorial-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .editorial-grid,
+  .editorial-grid-2,
+  .editorial-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  .article-card-featured {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   SECTION HEADERS
+   ============================================ */
+
+.section-header {
+  border-bottom: 3px solid var(--editorial-black);
+  padding-bottom: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.section-header-title {
+  font-family: var(--font-headline);
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--editorial-black);
+  margin: 0;
+}
+
+.section-header-subtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--editorial-grey);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   BUTTONS (Sharp Editorial Style)
+   ============================================ */
+
+.btn-editorial {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: white;
+  background: var(--editorial-black);
+  border: 2px solid var(--editorial-black);
+  border-radius: var(--radius-none);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-editorial:hover {
+  background: white;
+  color: var(--editorial-black);
+}
+
+.btn-editorial-outline {
+  background: transparent;
+  color: var(--editorial-black);
+}
+
+.btn-editorial-outline:hover {
+  background: var(--editorial-black);
+  color: white;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  :root {
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 2.5rem;
+  }
+  
+  .editorial-container,
+  .editorial-wide {
+    padding: 0 var(--space-md);
+  }
+}
+
+/* ============================================
+   SHARP EDGE OVERRIDES
+   ============================================ */
+
+* {
+  border-radius: 0 !important;
+}
+
+img, video {
+  border-radius: 0 !important;
+}
+
+button, input, select, textarea {
+  border-radius: 0 !important;
+}
