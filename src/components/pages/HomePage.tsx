@@ -82,8 +82,8 @@ export function HomePage() {
       <section className="hero-section">
         <div className="hero-overlay">
           <ImageWithFallback
-            src="images/menara.jpg"
-            alt="Menara"
+            src={timelineImages['2.webp'] || timelineImages['3.webp'] || '/images/menara.jpg'}
+            alt="United Moroccan Youth - Hero"
             className="hero-image"
             fetchPriority="high"
             loading="eager"
@@ -91,7 +91,7 @@ export function HomePage() {
         </div>
         <div className="hero-content-wrapper">
           <div className="hero-content">
-            <div className="hero-badge"></div>
+            
             <h1 className="hero-title">United Moroccan Youth</h1>
             <p className="hero-subtitle">
               Building bridges, fostering excellence, and celebrating Moroccan heritage through community engagement and professional development.

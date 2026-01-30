@@ -1,155 +1,115 @@
-# 🚀 Quick Redeploy Guide
+# How to Redeploy the Website
 
-## Option 1: Automatic Redeploy (GitHub + Vercel/Netlify)
+## Option 1: Automatic Deployment (GitHub + Vercel/Netlify)
 
-If your project is connected to GitHub and auto-deploy is enabled:
+If your repository is connected to Vercel or Netlify:
 
-### Step 1: Commit Your Changes
-```bash
-git add .
-git commit -m "Fix admin panel - restore posts list and edit/delete functionality"
-git push
-```
-
-### Step 2: Wait for Auto-Deploy
-- **Vercel**: Automatically deploys when you push to GitHub (check Vercel dashboard)
-- **Netlify**: Automatically deploys when you push to GitHub (check Netlify dashboard)
-
-**That's it!** Your site will redeploy automatically in 2-3 minutes.
-
----
-
-## Option 2: Manual Redeploy
-
-### If Using Vercel:
-
-1. **Go to [vercel.com](https://vercel.com)**
-2. **Select your project**
-3. **Click "Deployments" tab**
-4. **Click the "..." menu on the latest deployment**
-5. **Click "Redeploy"**
-6. **Confirm redeploy**
-
-OR
-
-1. **Go to your project dashboard**
-2. **Click "Deploy" button** (if available)
-3. **Select branch** (usually `main` or `master`)
-4. **Click "Deploy"**
-
-### If Using Netlify:
-
-1. **Go to [netlify.com](https://netlify.com)**
-2. **Select your site**
-3. **Click "Deploys" tab**
-4. **Click "Trigger deploy" → "Deploy site"**
-5. **Select branch** (usually `main` or `master`)
-6. **Click "Deploy site"**
-
----
-
-## Option 3: Redeploy via Command Line (Vercel CLI)
-
-### Install Vercel CLI (if not installed):
-```bash
-npm install -g vercel
-```
-
-### Login:
-```bash
-vercel login
-```
-
-### Deploy:
-```bash
-vercel --prod
-```
-
----
-
-## ✅ Pre-Deploy Checklist
-
-Before redeploying, make sure:
-
-- [ ] All changes are committed to Git
-- [ ] `vercel.json` exists in project root (for SPA routing)
-- [ ] Environment variables are set in Vercel/Netlify dashboard:
-  - `VITE_SUPABASE_URL`
-  - `VITE_SUPABASE_ANON_KEY`
-- [ ] Build works locally: `npm run build`
-
----
-
-## 🐛 If Redeploy Fails
-
-### Check Build Logs:
-1. Go to your deployment dashboard
-2. Click on the failed deployment
-3. Check the build logs for errors
-
-### Common Issues:
-
-**Error: Module not found**
-```bash
-# Fix: Make sure all dependencies are in package.json
-npm install
-git add package.json package-lock.json
-git commit -m "Update dependencies"
-git push
-```
-
-**Error: Environment variables missing**
-- Go to Project Settings → Environment Variables
-- Add missing variables
-- Redeploy
-
-**Error: Build command failed**
-- Test locally: `npm run build`
-- Fix any errors
-- Commit and push
-
----
-
-## 📝 Quick Commands Reference
-
-```bash
-# Test build locally
-npm run build
-
-# Preview production build
-npm run preview
-
-# Commit and push (triggers auto-deploy)
-git add .
-git commit -m "Your commit message"
-git push
-
-# Check deployment status (Vercel CLI)
-vercel ls
-
-# View deployment logs (Vercel CLI)
-vercel logs
-```
-
----
-
-## ⚡ Fastest Method
-
-**If you have GitHub auto-deploy enabled:**
-
-1. Open terminal in project folder
-2. Run:
+1. **Commit and push your changes:**
    ```bash
    git add .
-   git commit -m "Update admin panel"
-   git push
+   git commit -m "Update programs, footer, add legal pages"
+   git push origin main
    ```
-3. Wait 2-3 minutes
-4. Check your deployment dashboard
-5. Done! ✅
 
----
+2. **Wait for automatic deployment:**
+   - Vercel/Netlify will automatically detect the push and start building
+   - Check your deployment dashboard for build status
+   - Usually takes 2-5 minutes
 
-**Need help?** Check your deployment platform's documentation:
-- Vercel: https://vercel.com/docs
-- Netlify: https://docs.netlify.com
+## Option 2: Manual Deployment on Vercel
+
+1. **Install Vercel CLI (if not already installed):**
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Login to Vercel:**
+   ```bash
+   vercel login
+   ```
+
+3. **Deploy:**
+   ```bash
+   vercel --prod
+   ```
+
+## Option 3: Manual Deployment on Netlify
+
+1. **Install Netlify CLI (if not already installed):**
+   ```bash
+   npm install -g netlify-cli
+   ```
+
+2. **Login to Netlify:**
+   ```bash
+   netlify login
+   ```
+
+3. **Build the project:**
+   ```bash
+   npm run build
+   ```
+
+4. **Deploy:**
+   ```bash
+   netlify deploy --prod --dir=dist
+   ```
+
+## Option 4: Free Deployment Platforms
+
+### Vercel (Recommended - Free Tier)
+- Go to [vercel.com](https://vercel.com)
+- Sign up with GitHub
+- Import your repository
+- Vercel auto-detects Vite/React projects
+- Deploy automatically on every push
+
+### Netlify (Free Tier)
+- Go to [netlify.com](https://netlify.com)
+- Sign up with GitHub
+- Import your repository
+- Set build command: `npm run build`
+- Set publish directory: `dist`
+- Deploy
+
+### GitHub Pages (Free)
+1. Install `gh-pages`:
+   ```bash
+   npm install --save-dev gh-pages
+   ```
+
+2. Add to `package.json`:
+   ```json
+   "scripts": {
+     "deploy": "npm run build && gh-pages -d dist"
+   }
+   ```
+
+3. Deploy:
+   ```bash
+   npm run deploy
+   ```
+
+## Important Notes
+
+- **Environment Variables**: Make sure your Supabase environment variables are set in your deployment platform's settings
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Node Version**: Use Node.js 18+ or 20+
+
+## After Deployment
+
+1. Verify all pages are accessible:
+   - `/terms`
+   - `/privacy`
+   - `/credits`
+
+2. Check that:
+   - Footer shows logo and updated copyright
+   - Phone number is removed
+   - Programs show brief descriptions
+   - IR programs are in correct order
+
+3. Test admin panel (if applicable):
+   - Navigate to `/a8f4e2c9d7b1`
+   - Verify login and permissions work

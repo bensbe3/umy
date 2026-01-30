@@ -36,20 +36,28 @@ export function CommissionsPage() {
         'To strengthen Morocco\'s position on the global stage through strategic partnerships, cultural exchange, and international cooperation.',
       programs: [
         {
-          title: 'Simulations Historiques',
-          description: 'Historical reenactments and simulations to understand diplomatic history and international relations.',
+          title: 'XXL MUN',
+          description: 'Large-scale Model United Nations simulation bringing together participants from multiple universities to debate global issues and practice diplomatic negotiation.',
         },
         {
-          title: 'Model United Nations (MUN)',
-          description: 'Diplomatic simulations fostering debate, negotiation, and global awareness skills.',
+          title: 'Inside the Negotiation',
+          description: 'Historical simulation of the 1975 Madrid Accords featuring role-playing, strategy cards, and improvisation in a unique interactive format.',
         },
         {
-          title: 'Concours d\'Éloquence',
-          description: 'Public speaking competitions developing rhetoric and persuasive communication skills.',
+          title: 'Embassy Visits',
+          description: 'Educational visits to diplomatic missions and embassies providing direct exposure to international relations and diplomatic protocols.',
         },
         {
-          title: 'Visites Diplomatiques',
-          description: 'Educational visits to embassies and international organizations for practical exposure.',
+          title: 'Verba Mundi',
+          description: 'Public speaking competition challenging participants\' oratory skills while testing their knowledge of international relations and geopolitics.',
+        },
+        {
+          title: 'DécryptMundi',
+          description: 'Weekly posts and monthly reels summarizing key geopolitical events and trends in a visually engaging and easy-to-understand format.',
+        },
+        {
+          title: 'Diplomatic Café',
+          description: 'Monthly meetings in cafés and social spots for relaxed debates on fascinating topics related to international relations and networking.',
         },
       ],
     },
@@ -65,19 +73,27 @@ export function CommissionsPage() {
       programs: [
         {
           title: 'Inside Moroccan Politics',
-          description: 'Deep-dive analysis and discussion of current political developments and policy decisions.',
+          description: 'Educational program introducing youth to the Moroccan political system through dialogues with political parties, institutional visits, and ministerial meetings.',
         },
         {
-          title: 'Civic & Political Education',
-          description: 'Educational programs promoting democratic participation and political awareness among youth.',
+          title: 'Civic & Political Education Program',
+          description: 'Comprehensive training program covering the Moroccan political system, constitutional institutions, citizenship, and participatory democracy.',
+        },
+        {
+          title: 'Politicon - Political Hackathon',
+          description: 'Educational political hackathon where participants create fictional political parties, develop political visions, and design concrete proposals.',
         },
         {
           title: 'Moroccan Governance Simulation',
-          description: 'Interactive simulations providing hands-on experience with governance processes.',
+          description: 'Educational simulation to understand Morocco\'s territorial governance system, including roles of communes, provinces, and regions.',
         },
         {
-          title: 'Politicon',
-          description: 'Annual political conference bringing together students, experts, and policymakers.',
+          title: 'Moroccan Budget Simulation',
+          description: 'Simulation helping youth understand how public budgets are prepared and allocated in Morocco through sectoral analysis and priority identification.',
+        },
+        {
+          title: 'Youth Parliament Simulation',
+          description: 'Immersive parliamentary simulation introducing participants to the Moroccan legislative process through role-playing and policy analysis.',
         },
       ],
     },
@@ -93,19 +109,27 @@ export function CommissionsPage() {
       programs: [
         {
           title: 'VOICES of Hope',
-          description: 'Empowering communities through storytelling and shared experiences that inspire positive change.',
+          description: 'Initiative de bénévolat et d\'action sociale soutenant les communautés vulnérables. Inclut visites de terrain dans les zones rurales défavorisées, activités caritatives (distribution d\'iftar Ramadan, organisation vêtements/nourriture) et assistance dans les orphelinats et maisons de retraite.',
         },
         {
           title: 'Let Women SPEAK',
-          description: 'Providing platforms for women\'s voices to be heard and their perspectives to shape society.',
-        },
-        {
-          title: 'La Série de Visites',
-          description: 'Organizing field visits to connect communities and facilitate knowledge exchange.',
+          description: 'Événement dédié à la valorisation de la voix des femmes dans le monde des affaires, entrepreneuriat et leadership. Format TED Talks, panels interactifs, success stories et ateliers pratiques pour encourager la prise de parole et l\'initiative féminine.',
         },
         {
           title: 'Youth Fair',
-          description: 'Annual gathering celebrating youth innovation, creativity, and social entrepreneurship.',
+          description: 'Événement gratuit d\'orientation, opportunités et développement des compétences pour les jeunes. Rassemble organisations, associations, clubs étudiants, startups et institutions à travers des stands interactifs, ateliers et activités sur le leadership, entrepreneuriat et orientation académique.',
+        },
+        {
+          title: 'Atlas Leaders Program',
+          description: 'Four-week summer program developing the next generation of Moroccan problem-solving leaders through interactive sessions and mentorship.',
+        },
+        {
+          title: 'Rahmat Al Walidayn',
+          description: 'Structured four-week Ramadan humanitarian initiative organizing iftars in collaboration with local bakeries and associations, and large-scale iftars with volunteer groups.',
+        },
+        {
+          title: 'National Cleanup Campaign',
+          description: 'National environmental campaign mobilizing UMY members around beach and public space cleanup actions in multiple cities through simultaneous coordinated action.',
         },
       ],
     },

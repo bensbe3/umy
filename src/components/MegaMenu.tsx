@@ -59,7 +59,11 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ items }) => {
         {/* Logo/Brand */}
         <div className="mega-menu__brand">
           <Link to="/" className="mega-menu__logo">
-            Umy
+            <img 
+              src="/images/logoUmy.png" 
+              alt="United Moroccan Youth - UMY" 
+              className="mega-menu__logo-image"
+            />
           </Link>
         </div>
 

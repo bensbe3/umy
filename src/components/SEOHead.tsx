@@ -88,7 +88,7 @@ export function SEOHead({
         name: 'Youth Parliament Morocco',
         logo: {
           '@type': 'ImageObject',
-          url: `${window.location.origin}/logo.png`
+          url: `${window.location.origin}/images/logoUmy.png`
         }
       }
     };

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, Phone, Heart, ArrowRight } from 'lucide-react';
+import { Mail, MapPin, Heart, ArrowRight } from 'lucide-react';
 import './Footer.css';
 
 export function Footer() {
@@ -14,12 +14,10 @@ export function Footer() {
             {/* About Section */}
             <div className="footer-about">
               <div className="footer-logo">
-                <div className="footer-logo-icon">
-                  <span>UM</span>
-                </div>
+                <img src="/images/logoUmy.png" alt="UMY Logo" className="footer-logo-image" />
                 <div className="footer-logo-text">
                   <div className="footer-logo-title">United Moroccan</div>
-                  <div className="footer-logo-subtitle">Association</div>
+                  <div className="footer-logo-subtitle">Youth</div>
                 </div>
               </div>
               <p className="footer-description">
@@ -107,15 +105,6 @@ export function Footer() {
                   </div>
                 </li>
                 <li className="footer-contact-item">
-                  <Phone className="footer-contact-icon" />
-                  <div>
-                    <div className="footer-contact-label">Phone</div>
-                    <a href="tel:+2125XXXXXXXX" className="footer-contact-link">
-                      +212 5XX-XXXXXX
-                    </a>
-                  </div>
-                </li>
-                <li className="footer-contact-item">
                   <MapPin className="footer-contact-icon" />
                   <div>
                     <div className="footer-contact-label">Location</div>
@@ -128,16 +117,18 @@ export function Footer() {
 
           {/* Footer Bottom */}
           <div className="footer-bottom">
-            <div className="footer-bottom-content">
-              <p className="footer-copyright">
-                &copy; {new Date().getFullYear()} United Moroccan Association. All rights reserved.
-              </p>
-              <div className="footer-bottom-links">
-                <Link to="/privacy" className="footer-bottom-link">Privacy Policy</Link>
-                <span className="footer-divider">•</span>
-                <Link to="/terms" className="footer-bottom-link">Terms of Service</Link>
+              <div className="footer-bottom-content">
+                <p className="footer-copyright">
+                  &copy; {new Date().getFullYear()} United Moroccan Youth. All rights reserved. Developed and supervised by bensbe3.
+                </p>
+                <div className="footer-bottom-links">
+                  <Link to="/terms" className="footer-bottom-link">Terms of Service</Link>
+                  <span className="footer-divider">•</span>
+                  <Link to="/privacy" className="footer-bottom-link">Privacy Policy</Link>
+                  <span className="footer-divider">•</span>
+                  <Link to="/credits" className="footer-bottom-link">Credits</Link>
+                </div>
               </div>
-            </div>
           </div>
         </div>
       </div>

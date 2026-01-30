@@ -10,6 +10,9 @@ import { DecryptMundiPage } from './components/pages/DecryptMundiPage';
 import { ArticleDetailPage } from './components/pages/ArticleDetailPage';
 import { ActualiteDetailPage } from './components/pages/ActualiteDetailPage';
 import { CachePostPage } from './components/pages/CachePostPage';
+import { TermsPage } from './components/pages/TermsPage';
+import { PrivacyPage } from './components/pages/PrivacyPage';
+import { CreditsPage } from './components/pages/CreditsPage';
 
 export default function App() {
   return (
@@ -26,6 +29,9 @@ export default function App() {
             <Route path="/decryptmundi" element={<DecryptMundiPage />} />
             <Route path="/decryptmundi/:slug" element={<ArticleDetailPage />} />
             <Route path="/actualite/:id" element={<ActualiteDetailPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/credits" element={<CreditsPage />} />
             {/* Admin route - obfuscated */}
             <Route path="/a8f4e2c9d7b1" element={<CachePostPage />} />
           </Routes>

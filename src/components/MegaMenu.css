@@ -27,17 +27,33 @@
 }
 
 .mega-menu__logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #f5e6d3;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  letter-spacing: 0.05em;
-  transition: color 0.2s ease;
-  text-transform: uppercase;
+  transition: opacity 0.2s ease;
 }
 
 .mega-menu__logo:hover {
-  color: #8B0000;
+  opacity: 0.8;
+}
+
+.mega-menu__logo-image {
+  height: 100px;
+  margin-top: 18px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.mega-menu__logo:hover .mega-menu__logo-image {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .mega-menu__logo-image {
+    height: 48px;
+  }
 }
 
 /* Desktop Menu List */
