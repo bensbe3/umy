@@ -5,7 +5,6 @@ import './styles/globals.css'
 import './styles/editorial.css'
 import { initSecurity } from './utils/security.ts'
 import { AuthProvider } from './contexts/AuthContext.tsx'
-import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // Initialize security protections (after DOM is ready)
 if (document.readyState === 'loading') {
