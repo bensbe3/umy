@@ -5,7 +5,7 @@ import './styles/globals.css'
 import './styles/editorial.css'
 import { initSecurity } from './utils/security.ts'
 import { AuthProvider } from './contexts/AuthContext.tsx'
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 // Initialize security protections (after DOM is ready)
 if (document.readyState === 'loading') {
@@ -20,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AuthProvider>
       <App />
+      <SpeedInsights />
     </AuthProvider>
   </React.StrictMode>,
 )
