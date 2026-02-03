@@ -5,35 +5,70 @@ import { toast } from 'sonner';
 import { sanitizeText, validateInput, checkRateLimit } from '../../utils/sanitize';
 import './ContactPage.css';
 
+const SKILL_OPTIONS = [
+  { id: 'photography', label: 'Photography / التصوير الفوتوغرافي' },
+  { id: 'video_editing', label: 'Video Editing / المونتاج والتصميم' },
+  { id: 'web_development', label: 'Web development / تطوير المواقع' },
+  { id: 'social_media', label: 'Social Media Management / إدارة وسائل التواصل الاجتماعي' },
+  { id: 'content_writing', label: 'Content Writing / كتابة المحتوى' },
+];
+
+const REFERRAL_OPTIONS = [
+  { value: 'friend', label: 'Friend' },
+  { value: 'instagram', label: 'Instagram' },
+  { value: 'ken', label: 'KEN' },
+  { value: 'other', label: 'Autre / Other' },
+];
+
 interface FormData {
   name: string;
+  age: string;
   email: string;
   phone: string;
-  subject: string;
-  message: string;
-  interest: string;
-  organization?: string;
-  linkedin?: string;
+  cin_number: string;
+  current_occupation: string;
+  city: string;
+  other_organization: string;
+  political_party: string;
+  commission_interest: string;
+  commission_motivation: string;
+  position_applying: string;
+  active_membership_acknowledged: boolean;
+  previous_experiences: string;
+  skills: string[];
+  additional_info: string;
+  referral_source: string;
 }
 
 const STEPS = [
   { id: 1, title: 'Personal Info', required: true },
-  { id: 2, title: 'Interest', required: false },
-  { id: 3, title: 'Message', required: true },
-  { id: 4, title: 'Additional Info', required: false }
+  { id: 2, title: 'Current Situation', required: true },
+  { id: 3, title: 'Commission & Position', required: true },
+  { id: 4, title: 'Commitment', required: true },
+  { id: 5, title: 'Experience & Skills', required: false },
+  { id: 6, title: 'Additional', required: false },
 ];
 
 export function ContactPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     name: '',
+    age: '',
     email: '',
     phone: '',
-    subject: '',
-    message: '',
-    interest: 'general',
-    organization: '',
-    linkedin: '',
+    cin_number: '',
+    current_occupation: '',
+    city: '',
+    other_organization: '',
+    political_party: '',
+    commission_interest: '',
+    commission_motivation: '',
+    position_applying: 'membership',
+    active_membership_acknowledged: false,
+    previous_experiences: '',
+    skills: [],
+    additional_info: '',
+    referral_source: '',
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -42,23 +77,19 @@ export function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Rate limiting check (5 submissions per minute per IP)
+
     const clientId = localStorage.getItem('clientId') || `client_${Date.now()}`;
     localStorage.setItem('clientId', clientId);
-    
+
     if (!checkRateLimit(clientId, 5, 60000)) {
       toast.error('Too many submissions. Please wait a minute before trying again.');
       return;
     }
 
-    // Server-side validation and sanitization
     const nameValidation = validateInput(formData.name, 'text');
     const emailValidation = validateInput(formData.email, 'email');
-    const subjectValidation = validateInput(formData.subject, 'text');
-    const messageValidation = validateInput(formData.message, 'text');
 
-    if (!nameValidation.valid || !emailValidation.valid || !subjectValidation.valid || !messageValidation.valid) {
+    if (!nameValidation.valid || !emailValidation.valid) {
       toast.error('Please check your input. Some fields contain invalid characters.');
       return;
     }
@@ -72,20 +103,30 @@ export function ContactPage() {
         return;
       }
 
-      // Sanitize all inputs before sending
       const sanitizedData = {
         name: nameValidation.sanitized,
         email: emailValidation.sanitized,
         phone: sanitizeText(formData.phone),
-        subject: subjectValidation.sanitized,
-        message: messageValidation.sanitized,
-        interest: sanitizeText(formData.interest),
-        organization: formData.organization ? sanitizeText(formData.organization) : null,
-        linkedin: formData.linkedin ? sanitizeText(formData.linkedin) : null,
+        subject: 'UMY Membership Application',
+        message: formData.commission_motivation || 'No motivation provided',
+        age: formData.age ? parseInt(formData.age, 10) : null,
+        cin_number: formData.cin_number ? sanitizeText(formData.cin_number) : null,
+        current_occupation: formData.current_occupation ? sanitizeText(formData.current_occupation) : null,
+        city: formData.city ? sanitizeText(formData.city) : null,
+        other_organization: formData.other_organization ? sanitizeText(formData.other_organization) : null,
+        political_party: formData.political_party ? sanitizeText(formData.political_party) : null,
+        commission_interest: formData.commission_interest ? sanitizeText(formData.commission_interest) : null,
+        commission_motivation: formData.commission_motivation ? sanitizeText(formData.commission_motivation) : null,
+        position_applying: formData.position_applying ? sanitizeText(formData.position_applying) : null,
+        active_membership_acknowledged: formData.active_membership_acknowledged,
+        previous_experiences: formData.previous_experiences ? sanitizeText(formData.previous_experiences) : null,
+        skills: formData.skills.length > 0 ? formData.skills : null,
+        additional_info: formData.additional_info ? sanitizeText(formData.additional_info) : null,
+        referral_source: formData.referral_source ? sanitizeText(formData.referral_source) : null,
         status: 'new' as const,
       };
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('contact_submissions')
         .insert([sanitizedData])
         .select()
@@ -93,28 +134,36 @@ export function ContactPage() {
 
       if (error) throw error;
 
-      toast.success('Message sent successfully! We\'ll get back to you soon.');
+      toast.success('Application submitted successfully! We\'ll get back to you soon.');
       setSubmitted(true);
-      
-      // Reset form after 3 seconds
+
       setTimeout(() => {
         setSubmitted(false);
         setFormData({
           name: '',
+          age: '',
           email: '',
           phone: '',
-          subject: '',
-          message: '',
-          interest: 'general',
-          organization: '',
-          linkedin: '',
+          cin_number: '',
+          current_occupation: '',
+          city: '',
+          other_organization: '',
+          political_party: '',
+          commission_interest: '',
+          commission_motivation: '',
+          position_applying: 'membership',
+          active_membership_acknowledged: false,
+          previous_experiences: '',
+          skills: [],
+          additional_info: '',
+          referral_source: '',
         });
         setCurrentStep(1);
         setCompletedSteps([]);
       }, 3000);
     } catch (error: any) {
       console.error('Error submitting form:', error);
-      toast.error(error.message || 'Failed to send message. Please try again.');
+      toast.error(error.message || 'Failed to submit application. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -123,22 +172,37 @@ export function ContactPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handleSkillToggle = (skillId: string) => {
+    setFormData({
+      ...formData,
+      skills: formData.skills.includes(skillId)
+        ? formData.skills.filter((s) => s !== skillId)
+        : [...formData.skills, skillId],
     });
   };
 
   const validateStep = (step: number): boolean => {
     switch (step) {
       case 1:
-        return !!(formData.name && formData.email && formData.phone);
+        return !!(formData.name && formData.email && formData.phone && formData.age && formData.cin_number);
       case 2:
-        return true; // Optional step
+        return !!(formData.current_occupation && formData.city);
       case 3:
-        return !!(formData.subject && formData.message);
+        return !!(formData.commission_interest && formData.commission_motivation && formData.position_applying);
       case 4:
-        return true; // Optional step
+        return formData.active_membership_acknowledged;
+      case 5:
+        return true;
+      case 6:
+        return !!formData.referral_source;
       default:
         return false;
     }
@@ -162,112 +226,80 @@ export function ContactPage() {
   };
 
   const handleSkip = () => {
-    const currentStepInfo = STEPS.find(s => s.id === currentStep);
-    if (currentStepInfo && !currentStepInfo.required) {
-      if (currentStep < STEPS.length) {
-        setCurrentStep(currentStep + 1);
-      }
+    const currentStepInfo = STEPS.find((s) => s.id === currentStep);
+    if (currentStepInfo && !currentStepInfo.required && currentStep < STEPS.length) {
+      setCurrentStep(currentStep + 1);
     }
   };
 
   const canProceed = validateStep(currentStep);
   const isLastStep = currentStep === STEPS.length;
-  const currentStepInfo = STEPS.find(s => s.id === currentStep);
+  const currentStepInfo = STEPS.find((s) => s.id === currentStep);
 
   return (
     <div className="contact-page">
-      {/* Header */}
       <section className="contact-header-section">
         <div className="container">
-          <h1>Get in Touch</h1>
+          <h1>UMY Membership Application</h1>
           <p>
-            Have questions or want to get involved? We'd love to hear from you. Complete the form below to reach out to us.
+            This is the official application form to join the Moroccan Youth Union (UMY). Applications are open to young people aged 16 to 30. Application deadline: November 30th.
           </p>
         </div>
       </section>
 
-      {/* Contact Content */}
       <section className="contact-content-section">
         <div className="container">
           <div className="contact-grid">
-            {/* Contact Info */}
             <div>
               <div className="contact-info-card">
                 <h3>Contact Information</h3>
-                
                 <ul className="contact-info-list">
                   <li className="contact-info-item">
-                    <div className="contact-info-icon">
-                      <Mail />
-                    </div>
+                    <div className="contact-info-icon"><Mail /></div>
                     <div className="contact-info-content">
                       <div className="contact-info-label">Email</div>
-                      <a href="mailto:info@unitedmoroccan.org" className="contact-info-value">
-                        info@unitedmoroccan.org
-                      </a>
+                      <a href="mailto:info@unitedmoroccan.org" className="contact-info-value">info@unitedmoroccan.org</a>
                     </div>
                   </li>
-
                   <li className="contact-info-item">
-                    <div className="contact-info-icon">
-                      <Phone />
-                    </div>
+                    <div className="contact-info-icon"><Phone /></div>
                     <div className="contact-info-content">
                       <div className="contact-info-label">Phone</div>
-                      <a href="tel:+2125XXXXXXXX" className="contact-info-value">
-                        +212 5XX-XXXXXX
-                      </a>
+                      <a href="tel:+2125XXXXXXXX" className="contact-info-value">+212 5XX-XXXXXX</a>
                     </div>
                   </li>
-
                   <li className="contact-info-item">
-                    <div className="contact-info-icon">
-                      <MapPin />
-                    </div>
+                    <div className="contact-info-icon"><MapPin /></div>
                     <div className="contact-info-content">
                       <div className="contact-info-label">Location</div>
                       <p className="contact-info-value">Morocco</p>
                     </div>
                   </li>
                 </ul>
-
                 <div className="office-hours-box">
-                  <h4>Office Hours</h4>
-                  <p>
-                    Monday - Friday<br />
-                    9:00 AM - 6:00 PM (GMT)
-                  </p>
+                  <h4>Application Deadline</h4>
+                  <p>November 30th</p>
                 </div>
               </div>
             </div>
 
-            {/* Contact Form with Steps */}
             <div>
               <div className="contact-form-card">
-                <h3>Send Us a Message</h3>
+                <h3>UMY Application Form</h3>
 
                 {submitted ? (
                   <div className="form-success">
-                    <div className="success-icon-wrapper">
-                      <Send />
-                    </div>
-                    <h4>Message Sent Successfully!</h4>
-                    <p>
-                      Thank you for reaching out. We'll get back to you as soon as possible.
-                    </p>
+                    <div className="success-icon-wrapper"><Send /></div>
+                    <h4>Application Submitted!</h4>
+                    <p>Thank you for applying. We'll review your application and get back to you soon.</p>
                   </div>
                 ) : (
                   <>
-                    {/* Step Indicator */}
                     <div className="step-indicator">
                       {STEPS.map((step, index) => (
                         <div key={step.id} className="step-indicator-wrapper">
                           <div
-                            className={`step-indicator-item ${
-                              currentStep === step.id ? 'active' : ''
-                            } ${completedSteps.includes(step.id) ? 'completed' : ''} ${
-                              currentStep > step.id ? 'passed' : ''
-                            }`}
+                            className={`step-indicator-item ${currentStep === step.id ? 'active' : ''} ${completedSteps.includes(step.id) ? 'completed' : ''} ${currentStep > step.id ? 'passed' : ''}`}
                             onClick={() => {
                               if (completedSteps.includes(step.id) || currentStep > step.id) {
                                 setCurrentStep(step.id);
@@ -275,16 +307,10 @@ export function ContactPage() {
                             }}
                           >
                             <div className="step-number">
-                              {completedSteps.includes(step.id) ? (
-                                <Check size={14} />
-                              ) : (
-                                step.id
-                              )}
+                              {completedSteps.includes(step.id) ? <Check size={14} /> : step.id}
                             </div>
                             <div className="step-title">{step.title}</div>
-                            {!step.required && (
-                              <div className="step-optional">Optional</div>
-                            )}
+                            {!step.required && <div className="step-optional">Optional</div>}
                           </div>
                           {index < STEPS.length - 1 && (
                             <div className={`step-connector ${currentStep > step.id ? 'completed' : ''}`} />
@@ -293,184 +319,159 @@ export function ContactPage() {
                       ))}
                     </div>
 
-                    {/* Form */}
                     <form onSubmit={handleSubmit} className="contact-form">
                       {/* Step 1: Personal Info */}
                       <div className={`form-step ${currentStep === 1 ? 'active' : ''}`}>
                         <div className="form-step-content">
                           <div className="form-group">
-                            <label htmlFor="name">Full Name *</label>
-                            <input
-                              type="text"
-                              id="name"
-                              name="name"
-                              required
-                              value={formData.name}
-                              onChange={handleChange}
-                              placeholder="Your full name"
-                            />
+                            <label htmlFor="name">Full Name / الاسم الكامل *</label>
+                            <input type="text" id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Your full name" />
                           </div>
-
                           <div className="form-group">
-                            <label htmlFor="email">Email Address *</label>
-                            <input
-                              type="email"
-                              id="email"
-                              name="email"
-                              required
-                              value={formData.email}
-                              onChange={handleChange}
-                              placeholder="your.email@example.com"
-                            />
+                            <label htmlFor="age">Age / العمر *</label>
+                            <input type="number" id="age" name="age" required min={16} max={30} value={formData.age} onChange={handleChange} placeholder="16-30" />
                           </div>
-
                           <div className="form-group">
-                            <label htmlFor="phone">Phone Number *</label>
-                            <input
-                              type="tel"
-                              id="phone"
-                              name="phone"
-                              required
-                              value={formData.phone}
-                              onChange={handleChange}
-                              placeholder="+212 6XX-XXXXXX"
-                            />
+                            <label htmlFor="email">Email / البريد الإلكتروني *</label>
+                            <input type="email" id="email" name="email" required value={formData.email} onChange={handleChange} placeholder="your.email@example.com" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="phone">Phone / رقم الهاتف *</label>
+                            <input type="tel" id="phone" name="phone" required value={formData.phone} onChange={handleChange} placeholder="+212 6XX-XXXXXX" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="cin_number">CIN Number / رقم البطاقة الوطنية *</label>
+                            <input type="text" id="cin_number" name="cin_number" required value={formData.cin_number} onChange={handleChange} placeholder="National ID number" />
                           </div>
                         </div>
                       </div>
 
-                      {/* Step 2: Interest */}
+                      {/* Step 2: Current Situation */}
                       <div className={`form-step ${currentStep === 2 ? 'active' : ''}`}>
                         <div className="form-step-content">
                           <div className="form-group">
-                            <label htmlFor="interest">I'm Interested In</label>
-                            <select
-                              id="interest"
-                              name="interest"
-                              value={formData.interest}
-                              onChange={handleChange}
-                            >
-                              <option value="general">General Inquiry</option>
-                              <option value="membership">Membership</option>
-                              <option value="sponsorship">Sponsorship</option>
-                              <option value="sd">SD Commission - Sustainable Development</option>
-                              <option value="ir">IR Commission - International Relations</option>
-                              <option value="mp">MP Commission - Media & Publications</option>
-                              <option value="events">Events & Programs</option>
-                              <option value="partnership">Partnership Opportunities</option>
+                            <label htmlFor="current_occupation">Current Occupation / الوضع الحالي *</label>
+                            <input type="text" id="current_occupation" name="current_occupation" required value={formData.current_occupation} onChange={handleChange} placeholder="School year / work..." />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="city">City of residence / مدينة الإقامة *</label>
+                            <input type="text" id="city" name="city" required value={formData.city} onChange={handleChange} placeholder="Your city" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="other_organization">Other organization? / منظمة أخرى؟</label>
+                            <input type="text" id="other_organization" name="other_organization" value={formData.other_organization} onChange={handleChange} placeholder="If yes, which one?" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="political_party">Political party member? / عضو حزب سياسي؟</label>
+                            <input type="text" id="political_party" name="political_party" value={formData.political_party} onChange={handleChange} placeholder="If yes, which one?" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Step 3: Commission & Position */}
+                      <div className={`form-step ${currentStep === 3 ? 'active' : ''}`}>
+                        <div className="form-step-content">
+                          <div className="form-group">
+                            <label htmlFor="commission_interest">Commission interest / اللجان التي تهمك *</label>
+                            <select id="commission_interest" name="commission_interest" required value={formData.commission_interest} onChange={handleChange}>
+                              <option value="">Select...</option>
+                              <option value="mp">Moroccan Politics Commission / اللجنة السياسية المغربية</option>
+                              <option value="ir">International Relations Commission / لجنة العلاقات الدولية</option>
+                              <option value="sd">Social Development Commission / لجنة التنمية الاجتماعية</option>
+                            </select>
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="commission_motivation">Commission motivation / سبب الاهتمام *</label>
+                            <textarea id="commission_motivation" name="commission_motivation" required value={formData.commission_motivation} onChange={handleChange} rows={4} placeholder="Choose one commission and write a short motivation" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="position_applying">Position / المنصب *</label>
+                            <select id="position_applying" name="position_applying" required value={formData.position_applying} onChange={handleChange}>
+                              <option value="membership">Membership / عضوية</option>
+                              <option value="leadership">Leadership / منصب قيادي</option>
                             </select>
                           </div>
                         </div>
                       </div>
 
-                      {/* Step 3: Message */}
-                      <div className={`form-step ${currentStep === 3 ? 'active' : ''}`}>
-                        <div className="form-step-content">
-                          <div className="form-group">
-                            <label htmlFor="subject">Subject *</label>
-                            <input
-                              type="text"
-                              id="subject"
-                              name="subject"
-                              required
-                              value={formData.subject}
-                              onChange={handleChange}
-                              placeholder="Brief subject line"
-                            />
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="message">Message *</label>
-                            <textarea
-                              id="message"
-                              name="message"
-                              required
-                              value={formData.message}
-                              onChange={handleChange}
-                              rows={6}
-                              placeholder="Tell us more about your inquiry..."
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Step 4: Additional Info */}
+                      {/* Step 4: Commitment */}
                       <div className={`form-step ${currentStep === 4 ? 'active' : ''}`}>
                         <div className="form-step-content">
-                          <div className="form-group">
-                            <label htmlFor="organization">Organization/Company</label>
-                            <input
-                              type="text"
-                              id="organization"
-                              name="organization"
-                              value={formData.organization}
-                              onChange={handleChange}
-                              placeholder="Your organization (if applicable)"
-                            />
-                          </div>
-
-                          <div className="form-group">
-                            <label htmlFor="linkedin">LinkedIn Profile</label>
-                            <input
-                              type="url"
-                              id="linkedin"
-                              name="linkedin"
-                              value={formData.linkedin}
-                              onChange={handleChange}
-                              placeholder="https://linkedin.com/in/yourprofile"
-                            />
+                          <div className="form-group form-group-checkbox">
+                            <label>
+                              <input
+                                type="checkbox"
+                                name="active_membership_acknowledged"
+                                checked={formData.active_membership_acknowledged}
+                                onChange={handleChange}
+                              />
+                              I recognize that active membership within UMY requires serious work, participation, and help organizing events. *
+                            </label>
                           </div>
                         </div>
                       </div>
 
-                      {/* Navigation Buttons */}
+                      {/* Step 5: Experience & Skills */}
+                      <div className={`form-step ${currentStep === 5 ? 'active' : ''}`}>
+                        <div className="form-step-content">
+                          <div className="form-group">
+                            <label htmlFor="previous_experiences">Previous experiences / تجارب سابقة</label>
+                            <textarea id="previous_experiences" name="previous_experiences" value={formData.previous_experiences} onChange={handleChange} rows={4} placeholder="Share any previous experiences" />
+                          </div>
+                          <div className="form-group">
+                            <label>Skills / المهارات</label>
+                            <div className="skills-checkboxes">
+                              {SKILL_OPTIONS.map((skill) => (
+                                <label key={skill.id} className="skill-checkbox">
+                                  <input
+                                    type="checkbox"
+                                    checked={formData.skills.includes(skill.id)}
+                                    onChange={() => handleSkillToggle(skill.id)}
+                                  />
+                                  {skill.label}
+                                </label>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Step 6: Additional */}
+                      <div className={`form-step ${currentStep === 6 ? 'active' : ''}`}>
+                        <div className="form-step-content">
+                          <div className="form-group">
+                            <label htmlFor="additional_info">Anything else? / أي شيء آخر؟</label>
+                            <textarea id="additional_info" name="additional_info" value={formData.additional_info} onChange={handleChange} rows={3} placeholder="Anything else you want us to know" />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="referral_source">Where did you hear about this? *</label>
+                            <select id="referral_source" name="referral_source" required value={formData.referral_source} onChange={handleChange}>
+                              <option value="">Select...</option>
+                              {REFERRAL_OPTIONS.map((opt) => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="form-navigation">
                         {currentStep > 1 && (
-                          <button
-                            type="button"
-                            onClick={handlePrevious}
-                            className="form-nav-button prev"
-                          >
-                            <ChevronLeft />
-                            Previous
+                          <button type="button" onClick={handlePrevious} className="form-nav-button prev">
+                            <ChevronLeft /> Previous
                           </button>
                         )}
-
                         <div className="form-nav-right">
                           {currentStepInfo && !currentStepInfo.required && !isLastStep && (
-                            <button
-                              type="button"
-                              onClick={handleSkip}
-                              className="form-skip-button"
-                            >
-                              Skip
-                            </button>
+                            <button type="button" onClick={handleSkip} className="form-skip-button">Skip</button>
                           )}
-
                           {!isLastStep ? (
-                            <button
-                              type="button"
-                              onClick={handleNext}
-                              className="form-nav-button next"
-                              disabled={!canProceed}
-                            >
-                              Next
-                              <ChevronRight />
+                            <button type="button" onClick={handleNext} className="form-nav-button next" disabled={!canProceed}>
+                              Next <ChevronRight />
                             </button>
                           ) : (
-                            <button
-                              type="submit"
-                              className="form-submit-button"
-                              disabled={!canProceed || isSubmitting}
-                            >
-                              {isSubmitting ? (
-                                <>Sending...</>
-                              ) : (
-                                <>
-                                  <Send />
-                                  Send Message
-                                </>
-                              )}
+                            <button type="submit" className="form-submit-button" disabled={!canProceed || isSubmitting}>
+                              {isSubmitting ? <>Sending...</> : <><Send /> Submit Application</>}
                             </button>
                           )}
                         </div>
@@ -484,38 +485,21 @@ export function ContactPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
       <section className="faq-section">
         <div className="container">
           <h2>Frequently Asked Questions</h2>
-          
           <ul className="faq-list">
             <li className="faq-item">
-              <h4>How can I become a member?</h4>
-              <p>
-                Simply fill out the contact form above with "Membership" as your interest, and our team will send you all the necessary information and application materials.
-              </p>
+              <h4>What are the three commissions?</h4>
+              <p>Moroccan Politics, International Relations, and Social Development. You can apply as a Member or for a Leadership position within one commission.</p>
             </li>
-
             <li className="faq-item">
-              <h4>What are the benefits of sponsorship?</h4>
-              <p>
-                Sponsors receive brand visibility, networking opportunities, speaking engagements, and the satisfaction of supporting our mission. Visit our Sponsor Us page for detailed tier information.
-              </p>
+              <h4>What is the age requirement?</h4>
+              <p>Applications are open to young people aged 16 to 30.</p>
             </li>
-
             <li className="faq-item">
-              <h4>How can I join a commission?</h4>
-              <p>
-                Commission membership is open to active members. Contact us expressing your interest in SD, IR, or MP commissions, and we'll guide you through the process.
-              </p>
-            </li>
-
-            <li className="faq-item">
-              <h4>Do you accept volunteers?</h4>
-              <p>
-                Yes! We welcome volunteers for various programs and events. Reach out through the contact form and let us know your areas of interest and availability.
-              </p>
+              <h4>When is the deadline?</h4>
+              <p>November 30th. No applications will be accepted after this date.</p>
             </li>
           </ul>
         </div>

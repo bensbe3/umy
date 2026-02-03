@@ -746,6 +746,7 @@ function ContentManagementInterface() {
 
 /**
  * Contact Submissions View Component
+ * Form-style display with status tabs: Pending, Accepted, Interesting, Weak Candidate
  */
 function ContactSubmissionsView({
   submissions,
@@ -758,16 +759,36 @@ function ContactSubmissionsView({
   onSelectContact: (contact: ContactSubmission | null) => void;
   onUpdateStatus: (id: string, status: ContactSubmission['status']) => Promise<void>;
 }) {
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  const statusTabs = [
+    { id: 'all', label: 'All', count: submissions.length },
+    { id: 'pending', label: 'Pending', count: submissions.filter(s => ['new', 'read'].includes(s.status)).length },
+    { id: 'accepted', label: 'Accepted', count: submissions.filter(s => s.status === 'accepted').length },
+    { id: 'interesting', label: 'Interesting', count: submissions.filter(s => s.status === 'interesting').length },
+    { id: 'weak_candidate', label: 'Weak', count: submissions.filter(s => s.status === 'weak_candidate').length },
+  ];
+
+  const filteredSubmissions = statusFilter === 'all'
+    ? submissions
+    : statusFilter === 'pending'
+      ? submissions.filter(s => ['new', 'read'].includes(s.status))
+      : submissions.filter(s => s.status === statusFilter);
+
   const getStatusIcon = (status: ContactSubmission['status']) => {
     switch (status) {
       case 'new':
-        return <Clock size={16} />;
       case 'read':
-        return <Mail size={16} />;
-      case 'replied':
+        return <Clock size={16} />;
+      case 'accepted':
         return <CheckCircle size={16} />;
-      case 'archived':
+      case 'interesting':
+        return <Mail size={16} />;
+      case 'weak_candidate':
         return <Archive size={16} />;
+      case 'replied':
+      case 'archived':
+        return <Mail size={16} />;
       default:
         return <Mail size={16} />;
     }
@@ -776,9 +797,14 @@ function ContactSubmissionsView({
   const getStatusColor = (status: ContactSubmission['status']) => {
     switch (status) {
       case 'new':
-        return '#0ea5e9';
       case 'read':
+        return '#0ea5e9';
+      case 'accepted':
+        return '#16a34a';
+      case 'interesting':
         return '#d4af37';
+      case 'weak_candidate':
+        return '#6b7280';
       case 'replied':
         return '#16a34a';
       case 'archived':
@@ -787,6 +813,8 @@ function ContactSubmissionsView({
         return '#6b7280';
     }
   };
+
+  const candidateStatuses = ['accepted', 'interesting', 'weak_candidate'] as const;
 
   if (submissions.length === 0) {
     return (
@@ -799,8 +827,21 @@ function ContactSubmissionsView({
 
   return (
     <div className="contact-submissions-container">
+      <div className="contact-status-tabs">
+        {statusTabs.map((tab) => (
+          <button
+            key={tab.id}
+            className={`contact-status-tab ${statusFilter === tab.id ? 'active' : ''}`}
+            onClick={() => setStatusFilter(tab.id)}
+          >
+            {tab.label} ({tab.count})
+          </button>
+        ))}
+      </div>
+
+      <div className="contact-submissions-layout">
       <div className="contact-submissions-list">
-        {submissions.map((submission) => (
+        {filteredSubmissions.map((submission) => (
           <div
             key={submission.id}
             className={`contact-submission-card ${selectedContact?.id === submission.id ? 'selected' : ''}`}
@@ -813,11 +854,11 @@ function ContactSubmissionsView({
                 style={{ backgroundColor: getStatusColor(submission.status) }}
               >
                 {getStatusIcon(submission.status)}
-                {submission.status}
+                {submission.status.replace('_', ' ')}
               </div>
             </div>
             <div className="contact-card-email">{submission.email}</div>
-            <div className="contact-card-subject">{submission.subject}</div>
+            <div className="contact-card-subject">{submission.commission_interest || submission.subject || 'UMY Application'}</div>
             <div className="contact-card-date">
               {new Date(submission.created_at).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -831,74 +872,123 @@ function ContactSubmissionsView({
         ))}
       </div>
 
+      <div className="contact-detail-wrapper">
       {selectedContact && (
-        <div className="contact-detail-panel">
+        <div className="contact-detail-panel contact-detail-panel--form">
           <div className="contact-detail-header">
-            <h2>Contact Submission Details</h2>
+            <h2>Application Details</h2>
             <button onClick={() => onSelectContact(null)} className="close-detail-button">
               <X size={18} />
             </button>
           </div>
 
-          <div className="contact-detail-content">
+          <div className="contact-detail-content contact-form-display">
             <div className="contact-detail-section">
               <h3>Personal Information</h3>
-              <div className="contact-detail-field">
-                <label>Name</label>
-                <div>{selectedContact.name}</div>
-              </div>
-              <div className="contact-detail-field">
-                <label>Email</label>
-                <div>
-                  <a href={`mailto:${selectedContact.email}`}>{selectedContact.email}</a>
-                </div>
-              </div>
-              <div className="contact-detail-field">
-                <label>Phone</label>
-                <div>
-                  <a href={`tel:${selectedContact.phone}`}>{selectedContact.phone}</a>
-                </div>
-              </div>
-              {selectedContact.organization && (
+              <div className="contact-form-row">
                 <div className="contact-detail-field">
-                  <label>Organization</label>
-                  <div>{selectedContact.organization}</div>
+                  <label>Full Name</label>
+                  <div>{selectedContact.name}</div>
                 </div>
-              )}
-              {selectedContact.linkedin && (
                 <div className="contact-detail-field">
-                  <label>LinkedIn</label>
-                  <div>
-                    <a href={selectedContact.linkedin} target="_blank" rel="noopener noreferrer">
-                      {selectedContact.linkedin}
-                    </a>
-                  </div>
+                  <label>Age</label>
+                  <div>{selectedContact.age ?? '—'}</div>
                 </div>
-              )}
-            </div>
-
-            <div className="contact-detail-section">
-              <h3>Message</h3>
-              <div className="contact-detail-field">
-                <label>Subject</label>
-                <div>{selectedContact.subject}</div>
+              </div>
+              <div className="contact-form-row">
+                <div className="contact-detail-field">
+                  <label>Email</label>
+                  <div><a href={`mailto:${selectedContact.email}`}>{selectedContact.email}</a></div>
+                </div>
+                <div className="contact-detail-field">
+                  <label>Phone</label>
+                  <div><a href={`tel:${selectedContact.phone}`}>{selectedContact.phone}</a></div>
+                </div>
               </div>
               <div className="contact-detail-field">
-                <label>Interest</label>
-                <div>{selectedContact.interest || 'Not specified'}</div>
-              </div>
-              <div className="contact-detail-field">
-                <label>Message</label>
-                <div className="contact-message-content">{selectedContact.message}</div>
+                <label>CIN Number</label>
+                <div>{selectedContact.cin_number || '—'}</div>
               </div>
             </div>
 
             <div className="contact-detail-section">
-              <h3>Metadata</h3>
+              <h3>Current Situation</h3>
+              <div className="contact-form-row">
+                <div className="contact-detail-field">
+                  <label>Current Occupation</label>
+                  <div>{selectedContact.current_occupation || '—'}</div>
+                </div>
+                <div className="contact-detail-field">
+                  <label>City</label>
+                  <div>{selectedContact.city || '—'}</div>
+                </div>
+              </div>
+              <div className="contact-form-row">
+                <div className="contact-detail-field">
+                  <label>Other Organization</label>
+                  <div>{selectedContact.other_organization || '—'}</div>
+                </div>
+                <div className="contact-detail-field">
+                  <label>Political Party</label>
+                  <div>{selectedContact.political_party || '—'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="contact-detail-section">
+              <h3>Commission & Position</h3>
+              <div className="contact-form-row">
+                <div className="contact-detail-field">
+                  <label>Commission Interest</label>
+                  <div>{selectedContact.commission_interest || '—'}</div>
+                </div>
+                <div className="contact-detail-field">
+                  <label>Position Applying</label>
+                  <div>{selectedContact.position_applying || '—'}</div>
+                </div>
+              </div>
               <div className="contact-detail-field">
-                <label>Status</label>
-                <div className="contact-status-selector">
-                  {(['new', 'read', 'replied', 'archived'] as const).map((status) => (
+                <label>Commission Motivation</label>
+                <div className="contact-message-content">{selectedContact.commission_motivation || selectedContact.message || '—'}</div>
+              </div>
+            </div>
+
+            <div className="contact-detail-section">
+              <h3>Experience & Skills</h3>
+              <div className="contact-detail-field">
+                <label>Active Membership Acknowledged</label>
+                <div>{selectedContact.active_membership_acknowledged ? 'Yes' : 'No'}</div>
+              </div>
+              <div className="contact-detail-field">
+                <label>Previous Experiences</label>
+                <div className="contact-message-content">{selectedContact.previous_experiences || '—'}</div>
+              </div>
+              <div className="contact-detail-field">
+                <label>Skills</label>
+                <div>{selectedContact.skills?.length ? selectedContact.skills.join(', ') : '—'}</div>
+              </div>
+            </div>
+
+            <div className="contact-detail-section">
+              <h3>Additional</h3>
+              <div className="contact-form-row">
+                <div className="contact-detail-field">
+                  <label>Referral Source</label>
+                  <div>{selectedContact.referral_source || '—'}</div>
+                </div>
+              </div>
+              <div className="contact-detail-field">
+                <label>Additional Info</label>
+                <div className="contact-message-content">{selectedContact.additional_info || '—'}</div>
+              </div>
+            </div>
+
+            <div className="contact-detail-section">
+              <h3>Classification</h3>
+              <div className="contact-detail-field">
+                <label>Move to</label>
+                <div className="contact-status-selector contact-classification-buttons">
+                  {candidateStatuses.map((status) => (
                     <button
                       key={status}
                       className={`status-button ${selectedContact.status === status ? 'active' : ''}`}
@@ -909,7 +999,7 @@ function ContactSubmissionsView({
                       }}
                     >
                       {getStatusIcon(status)}
-                      {status}
+                      {status === 'accepted' ? 'Accepted Members' : status === 'interesting' ? 'Interesting Members' : 'Weak Candidate'}
                     </button>
                   ))}
                 </div>
@@ -926,24 +1016,12 @@ function ContactSubmissionsView({
                   })}
                 </div>
               </div>
-              {selectedContact.updated_at !== selectedContact.created_at && (
-                <div className="contact-detail-field">
-                  <label>Last Updated</label>
-                  <div>
-                    {new Date(selectedContact.updated_at).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
       )}
+      </div>
+      </div>
     </div>
   );
 }

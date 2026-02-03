@@ -110,7 +110,47 @@
   font-weight: 700;
 }
 
-/* Featured Article Section - Top 2 Articles Split */
+/* Articles Section - Alternating layout */
+.decryptmundi-articles-section {
+  max-width: 1100px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+
+.decryptmundi-article-row {
+  display: grid;
+  gap: 2%;
+  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(245, 230, 211, 0.3);
+}
+
+.decryptmundi-article-row:last-of-type {
+  border-bottom: none;
+}
+
+/* Row A: 1 left + 2 right (2 articles stacked on right) */
+.decryptmundi-article-row--A {
+  grid-template-columns: 1fr 2fr;
+}
+
+.decryptmundi-article-row--A .decryptmundi-row-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Row B: 1 left + 1 right */
+.decryptmundi-article-row--B {
+  grid-template-columns: 1fr 1fr;
+}
+
+.decryptmundi-article-row--B .decryptmundi-row-right {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Legacy featured-article for compatibility */
 .featured-article-section {
   max-width: 1100px;
   margin: 3rem auto;
@@ -487,6 +527,21 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
+  .decryptmundi-article-row--A,
+  .decryptmundi-article-row--B {
+    grid-template-columns: 1fr;
+  }
+
+  .decryptmundi-article-row--A .decryptmundi-row-right {
+    border-top: 1px solid rgba(245, 230, 211, 0.2);
+    padding-top: 1.5rem;
+  }
+
+  .decryptmundi-article-row--B .decryptmundi-row-right {
+    border-top: 1px solid rgba(245, 230, 211, 0.2);
+    padding-top: 1.5rem;
+  }
+
   .featured-article {
     grid-template-columns: 1fr;
   }

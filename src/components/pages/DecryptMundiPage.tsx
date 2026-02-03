@@ -81,9 +81,18 @@ export function DecryptMundiPage() {
     setLoading(true);
   };
 
-  // Split articles: first 2 for featured section, rest for regular grid
-  const featuredArticles = articles.slice(0, 2);
-  const regularArticles = articles.slice(2);
+  // Build alternating rows: Row 1 = 1 left + 2 right, Row 2 = 1 left + 1 right, repeat
+  const articleRows: { type: 'A' | 'B'; articles: Article[] }[] = [];
+  let idx = 0;
+  while (idx < articles.length) {
+    if (articleRows.length % 2 === 0) {
+      articleRows.push({ type: 'A', articles: articles.slice(idx, idx + 3) });
+      idx += 3;
+    } else {
+      articleRows.push({ type: 'B', articles: articles.slice(idx, idx + 2) });
+      idx += 2;
+    }
+  }
 
   // Helper to strip HTML and get first line
   const getFirstLine = (html: string, maxLength: number = 150) => {
@@ -143,147 +152,47 @@ export function DecryptMundiPage() {
           </div>
         ) : (
           <>
-            {/* Featured Section - Top 2 Articles (60% / 40%) */}
-            {featuredArticles.length > 0 && (
-              <section className="featured-article-section">
-                <div className="featured-article">
-                  {/* Latest Article (60% left) */}
-                  {featuredArticles[0] && (
-                    <div className="featured-article-main">
-                      {featuredArticles[0].featured_image_url && (
-                        <Link
-                          to={featuredArticles[0].slug ? `/decryptmundi/${featuredArticles[0].slug}` : `/decryptmundi/${featuredArticles[0].id}`}
-                        >
-                          <img
-                            src={featuredArticles[0].featured_image_url}
-                            alt={featuredArticles[0].title}
-                            className="featured-article-image"
-                          />
-                        </Link>
-                      )}
-                      
-                      <div className="featured-article-content">
-                        {featuredArticles[0].category && (
-                          <span className="featured-article-category">{featuredArticles[0].category}</span>
-                        )}
-                        
-                        <h2 className="featured-article-title">{featuredArticles[0].title}</h2>
-                        
-                        {featuredArticles[0].excerpt && (
-                          <p className="featured-article-excerpt">{featuredArticles[0].excerpt}</p>
-                        )}
-                        
-                        <div className="featured-article-meta">
-                          {featuredArticles[0].author_name && (
-                            <span className="featured-article-author">
-                              <UserIcon size={16} />
-                              {featuredArticles[0].author_name}
-                            </span>
-                          )}
-                          
-                          {featuredArticles[0].published_at && (
-                            <span className="featured-article-date">
-                              <Calendar size={16} />
-                              {format(new Date(featuredArticles[0].published_at), 'MMM dd, yyyy')}
-                            </span>
-                          )}
-                          
-                          {featuredArticles[0].read_time_minutes && (
-                            <span className="featured-article-read-time">
-                              <Clock size={16} />
-                              {featuredArticles[0].read_time_minutes} min read
-                            </span>
-                          )}
-                        </div>
-
-                        <Link
-                          to={featuredArticles[0].slug ? `/decryptmundi/${featuredArticles[0].slug}` : `/decryptmundi/${featuredArticles[0].id}`}
-                          className="featured-article-read-btn"
-                        >
-                          Read Full Article
-                          <ArrowRight size={18} />
-                        </Link>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Second Article (40% right) */}
-                  {featuredArticles[1] && (
-                    <div className="featured-article-secondary">
-                      {featuredArticles[1].featured_image_url && (
-                        <Link
-                          to={featuredArticles[1].slug ? `/decryptmundi/${featuredArticles[1].slug}` : `/decryptmundi/${featuredArticles[1].id}`}
-                        >
-                          <img
-                            src={featuredArticles[1].featured_image_url}
-                            alt={featuredArticles[1].title}
-                            className="secondary-article-image"
-                          />
-                        </Link>
-                      )}
-                      
-                      {featuredArticles[1].category && (
-                        <span className="secondary-article-category">{featuredArticles[1].category}</span>
-                      )}
-                      
-                      <Link
-                        to={featuredArticles[1].slug ? `/decryptmundi/${featuredArticles[1].slug}` : `/decryptmundi/${featuredArticles[1].id}`}
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <h3 className="secondary-article-title">{featuredArticles[1].title}</h3>
-                      </Link>
-                      
-                      {/* First line of content */}
-                      <p className="secondary-article-first-line">
-                        {getFirstLine(featuredArticles[1].excerpt || featuredArticles[1].content)}
-                      </p>
-                      
-                      <div className="secondary-article-meta">
-                        {featuredArticles[1].author_name && (
-                          <span>By {featuredArticles[1].author_name}</span>
-                        )}
-                        
-                        {featuredArticles[1].published_at && (
-                          <span>{format(new Date(featuredArticles[1].published_at), 'MMM dd')}</span>
-                        )}
-                        
-                        {featuredArticles[1].read_time_minutes && (
-                          <span>{featuredArticles[1].read_time_minutes} min</span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
-            )}
-
-            {/* Regular Articles Grid */}
-            <section className="articles-section">
-              <div className="articles-section-header">
-                <h2 className="articles-section-title">Latest Analysis</h2>
-              </div>
-
-              {regularArticles.length > 0 ? (
-                <>
-                  <div className="articles-grid">
-                    {regularArticles.map(article => (
-                      <ArticleCard key={article.id} article={article} />
-                    ))}
+            {/* Articles Grid - Alternating layout: Row A = 1 left + 2 right, Row B = 1 left + 1 right */}
+            <section className="decryptmundi-articles-section">
+              {articleRows.map((row, rowIndex) => (
+                <div
+                  key={rowIndex}
+                  className={`decryptmundi-article-row decryptmundi-article-row--${row.type}`}
+                >
+                  {/* Left column - 1 article */}
+                  <div className="decryptmundi-row-left">
+                    {row.articles[0] && (
+                      <FeaturedArticleCard article={row.articles[0]} getFirstLine={getFirstLine} />
+                    )}
                   </div>
+                  {/* Right column - 2 articles (type A) or 1 article (type B) */}
+                  <div className="decryptmundi-row-right">
+                    {row.type === 'A' && row.articles[1] && (
+                      <SecondaryArticleCard article={row.articles[1]} getFirstLine={getFirstLine} />
+                    )}
+                    {row.type === 'A' && row.articles[2] && (
+                      <SecondaryArticleCard article={row.articles[2]} getFirstLine={getFirstLine} />
+                    )}
+                    {row.type === 'B' && row.articles[1] && (
+                      <FeaturedArticleCard article={row.articles[1]} getFirstLine={getFirstLine} />
+                    )}
+                  </div>
+                </div>
+              ))}
 
-                  {hasMore && (
-                    <div className="load-more-container">
-                      <button
-                        onClick={loadMore}
-                        className="load-more-btn"
-                        disabled={loading}
-                      >
-                        {loading ? 'Loading...' : 'Load More Articles'}
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
+              {hasMore && (
+                <div className="load-more-container">
+                  <button
+                    onClick={loadMore}
+                    className="load-more-btn"
+                    disabled={loading}
+                  >
+                    {loading ? 'Loading...' : 'Load More Articles'}
+                  </button>
+                </div>
+              )}
+
+              {articleRows.length === 0 && !loading && (
                 <div className="articles-empty">
                   <h3 className="articles-empty-title">No articles yet</h3>
                   <p className="articles-empty-text">
@@ -299,55 +208,89 @@ export function DecryptMundiPage() {
   );
 }
 
-function ArticleCard({ article }: { article: Article }) {
+function FeaturedArticleCard({ article, getFirstLine }: { article: Article; getFirstLine: (html: string, max?: number) => string }) {
   const articlePath = article.slug ? `/decryptmundi/${article.slug}` : `/decryptmundi/${article.id}`;
 
   return (
-    <article className="article-card">
-      <Link 
-        to={articlePath}
-        className="article-card-image-link"
-      >
-        {article.featured_image_url && (
+    <div className="featured-article-main">
+      {article.featured_image_url && (
+        <Link to={articlePath}>
           <img
             src={article.featured_image_url}
             alt={article.title}
-            className="article-card-image"
+            className="featured-article-image"
           />
-        )}
-      </Link>
-      
-      <div className="article-card-content">
-        {article.category && (
-          <span className="article-card-category">{article.category}</span>
-        )}
-        
-        <Link to={articlePath} style={{ textDecoration: 'none' }}>
-          <h3 className="article-card-title">{article.title}</h3>
         </Link>
-        
-        {article.excerpt && (
-          <p className="article-card-excerpt">{article.excerpt}</p>
+      )}
+      <div className="featured-article-content">
+        {article.category && (
+          <span className="featured-article-category">{article.category}</span>
         )}
-        
-        <div className="article-card-meta">
+        <h2 className="featured-article-title">{article.title}</h2>
+        {article.excerpt && (
+          <p className="featured-article-excerpt">{article.excerpt}</p>
+        )}
+        <div className="featured-article-meta">
           {article.author_name && (
-            <span className="article-card-author">{article.author_name}</span>
+            <span className="featured-article-author">
+              <UserIcon size={16} />
+              {article.author_name}
+            </span>
           )}
-          
           {article.published_at && (
-            <span className="article-card-date">
+            <span className="featured-article-date">
+              <Calendar size={16} />
               {format(new Date(article.published_at), 'MMM dd, yyyy')}
             </span>
           )}
-          
           {article.read_time_minutes && (
-            <span className="article-card-read-time">
-              {article.read_time_minutes} min
+            <span className="featured-article-read-time">
+              <Clock size={16} />
+              {article.read_time_minutes} min read
             </span>
           )}
         </div>
+        <Link to={articlePath} className="featured-article-read-btn">
+          Read Full Article
+          <ArrowRight size={18} />
+        </Link>
       </div>
-    </article>
+    </div>
+  );
+}
+
+function SecondaryArticleCard({ article, getFirstLine }: { article: Article; getFirstLine: (html: string, max?: number) => string }) {
+  const articlePath = article.slug ? `/decryptmundi/${article.slug}` : `/decryptmundi/${article.id}`;
+
+  return (
+    <div className="featured-article-secondary">
+      {article.featured_image_url && (
+        <Link to={articlePath}>
+          <img
+            src={article.featured_image_url}
+            alt={article.title}
+            className="secondary-article-image"
+          />
+        </Link>
+      )}
+      {article.category && (
+        <span className="secondary-article-category">{article.category}</span>
+      )}
+      <Link to={articlePath} style={{ textDecoration: 'none' }}>
+        <h3 className="secondary-article-title">{article.title}</h3>
+      </Link>
+      <p className="secondary-article-first-line">
+        {getFirstLine(article.excerpt || article.content)}
+      </p>
+      <div className="secondary-article-meta">
+        {article.author_name && <span>By {article.author_name}</span>}
+        {article.published_at && (
+          <span>{format(new Date(article.published_at), 'MMM dd')}</span>
+        )}
+        {article.read_time_minutes && (
+          <span>{article.read_time_minutes} min</span>
+        )}
+      </div>
+    </div>
   );
 }

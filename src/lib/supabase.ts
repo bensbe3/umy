@@ -60,7 +60,21 @@ export interface ContactSubmission {
   interest?: string;
   organization?: string;
   linkedin?: string;
-  status: 'new' | 'read' | 'replied' | 'archived';
+  age?: number;
+  cin_number?: string;
+  current_occupation?: string;
+  city?: string;
+  other_organization?: string;
+  political_party?: string;
+  commission_interest?: string;
+  commission_motivation?: string;
+  position_applying?: string;
+  active_membership_acknowledged?: boolean;
+  previous_experiences?: string;
+  skills?: string[];
+  additional_info?: string;
+  referral_source?: string;
+  status: 'new' | 'read' | 'replied' | 'archived' | 'accepted' | 'interesting' | 'weak_candidate';
   created_at: string;
   updated_at: string;
 }

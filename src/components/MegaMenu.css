@@ -136,20 +136,22 @@
   transform: rotate(180deg);
 }
 
-/* Dropdown Wrapper */
+/* Dropdown Wrapper - positioned under parent menu item */
 .mega-menu__dropdown-wrapper {
-  position: fixed;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0;
   pointer-events: none;
   z-index: 999;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   width: auto;
   max-width: 900px;
-  padding: 0 24px;
+  padding: 0;
+  min-width: 550px;
 }
+
 
 /* Dropdown Content */
 .mega-menu__dropdown-content {

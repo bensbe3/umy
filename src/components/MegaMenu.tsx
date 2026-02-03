@@ -1,5 +1,5 @@
 // MegaMenu.tsx
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,18 +26,32 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ items }) => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<number | null>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
-  const handleMouseEnter = (index: number) => {
+  const handleToggleMenu = (index: number) => {
     if (items[index].submenu && window.innerWidth > 768) {
-      setActiveMenu(index);
+      setActiveMenu(activeMenu === index ? null : index);
     }
   };
 
-  const handleMouseLeave = () => {
-    if (window.innerWidth > 768) {
-      setActiveMenu(null);
-    }
+  const closeDesktopMenu = () => {
+    setActiveMenu(null);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (window.innerWidth <= 768) return;
+      const target = e.target as Node;
+      if (activeMenu !== null && !itemRefs.current[activeMenu]?.contains(target)) {
+        const dropdown = document.querySelector('.mega-menu__dropdown-wrapper');
+        if (dropdown && !dropdown.contains(target)) {
+          closeDesktopMenu();
+        }
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [activeMenu]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -72,13 +86,16 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ items }) => {
           {items.map((item, index) => (
             <li
               key={index}
+              ref={(el) => { itemRefs.current[index] = el; }}
               className="mega-menu__item"
-              onMouseEnter={() => handleMouseEnter(index)}
-              onMouseLeave={handleMouseLeave}
             >
               {item.submenu ? (
                 <>
-                  <button className="mega-menu__link mega-menu__link--button">
+                  <button
+                    className="mega-menu__link mega-menu__link--button"
+                    onClick={() => handleToggleMenu(index)}
+                    type="button"
+                  >
                     <span>{item.label}</span>
                     <ChevronDown
                       className={`mega-menu__chevron ${
