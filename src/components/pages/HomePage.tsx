@@ -67,13 +67,13 @@ export function HomePage() {
       year: "June 2022",
       title: "Foundation & Vision",
       description: "Founded as YMUN, a nationally recognized Model United Nations club, bringing together young Moroccans engaged in diplomacy, debate, and international affairs. YMUN quickly gained national visibility through conferences, training programs, and youth-led initiatives.",
-      image: timelineImages['3.webp']
+      image: timelineImages['1.webp']
     },
     {
       year: "2025",
       title: "officially NGO",
       description: "Building on this foundation, the organization evolved into United Moroccan Youth, officially established as a non-governmental organization. This transition marked an expansion of its mission toward structured dialogue, civic engagement, and the development of initiatives with practical impact at both national and international levels.",
-      image: timelineImages['2.webp']
+      image: timelineImages['5.webp']
     },
   ];
 
@@ -82,7 +82,7 @@ export function HomePage() {
       <section className="hero-section">
         <div className="hero-overlay">
           <ImageWithFallback
-            src={timelineImages['2.webp'] || timelineImages['3.webp'] || '/images/menara.jpg'}
+            src={timelineImages['20.webp']}
             alt="United Moroccan Youth - Hero"
             className="hero-image"
             fetchPriority="high"
@@ -92,7 +92,7 @@ export function HomePage() {
         <div className="hero-content-wrapper">
           <div className="hero-content">
             
-            <h1 className="hero-title">United Moroccan Youth</h1>
+            <h1 className="hero-title"> </h1>
             <p className="hero-subtitle">
               Building bridges, fostering excellence, and celebrating Moroccan heritage through community engagement and professional development.
             </p>

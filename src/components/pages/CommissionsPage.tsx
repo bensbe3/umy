@@ -73,27 +73,23 @@ export function CommissionsPage() {
       programs: [
         {
           title: 'Inside Moroccan Politics',
-          description: 'Educational program introducing youth to the Moroccan political system through dialogues with political parties, institutional visits, and ministerial meetings.',
+          description: 'Inside Moroccan Politics is an institutional dialogue program that connects young people with public institutions and political actors in Morocco, helping them understand how policies are made, how institutions function, and how to engage responsibly in public life.',
         },
         {
           title: 'Civic & Political Education Program',
-          description: 'Comprehensive training program covering the Moroccan political system, constitutional institutions, citizenship, and participatory democracy.',
+          description: 'Civic & Political Education is an educational program that strengthens young people’s understanding of citizenship, democratic values, and political systems, while promoting critical thinking, civic responsibility, and informed participation.',
         },
         {
           title: 'Politicon - Political Hackathon',
-          description: 'Educational political hackathon where participants create fictional political parties, develop political visions, and design concrete proposals.',
+          description: 'Politicon Hackathon is an intensive civic innovation event where young participants work in teams to develop practical solutions to public policy and governance challenges and present their proposals to experts.',
         },
         {
           title: 'Moroccan Governance Simulation',
-          description: 'Educational simulation to understand Morocco\'s territorial governance system, including roles of communes, provinces, and regions.',
+          description: 'Moroccan Governance Simulation is an interactive program that introduces young people to governance in Morocco through three simulations: government (MGS), parliament (MPS), and national budget (MBS), helping them experience public decision-making and develop leadership and teamwork skills.',
         },
         {
-          title: 'Moroccan Budget Simulation',
-          description: 'Simulation helping youth understand how public budgets are prepared and allocated in Morocco through sectoral analysis and priority identification.',
-        },
-        {
-          title: 'Youth Parliament Simulation',
-          description: 'Immersive parliamentary simulation introducing participants to the Moroccan legislative process through role-playing and policy analysis.',
+          title: 'Sawt Shabab',
+          description: 'Sawt Shabab is a digital civic engagement program that amplifies youth voices and promotes political awareness in Morocco through short videos, interactive content, and online discussions.',
         },
       ],
     },
@@ -108,28 +104,24 @@ export function CommissionsPage() {
         'To promote sustainable development and social progress that benefits all members of Moroccan society, focusing on education, health, and community empowerment.',
       programs: [
         {
-          title: 'VOICES of Hope',
-          description: 'Initiative de bénévolat et d\'action sociale soutenant les communautés vulnérables. Inclut visites de terrain dans les zones rurales défavorisées, activités caritatives (distribution d\'iftar Ramadan, organisation vêtements/nourriture) et assistance dans les orphelinats et maisons de retraite.',
+          title: 'Voices of Hope',
+          description: 'Humanitarian initiative supporting vulnerable communities through essential aid, social support, and compassionate outreach to families, children, animals and the elderly.',
         },
         {
           title: 'Let Women SPEAK',
-          description: 'Événement dédié à la valorisation de la voix des femmes dans le monde des affaires, entrepreneuriat et leadership. Format TED Talks, panels interactifs, success stories et ateliers pratiques pour encourager la prise de parole et l\'initiative féminine.',
+          description: 'Women Speak Business empowers women through inspiring talks, panels, and workshops, fostering leadership, skills, confidence, networking, and impact in entrepreneurship and professional environments.',
         },
         {
-          title: 'Youth Fair',
-          description: 'Événement gratuit d\'orientation, opportunités et développement des compétences pour les jeunes. Rassemble organisations, associations, clubs étudiants, startups et institutions à travers des stands interactifs, ateliers et activités sur le leadership, entrepreneuriat et orientation académique.',
+          title: 'The United Skills Forum',
+          description: 'The United Skills Forum unites youth through keynotes, workshops, and competition, developing leadership, communication, problem-solving, collaboration, and empowering Morocco’s next generation of changemakers.',
         },
         {
-          title: 'Atlas Leaders Program',
-          description: 'Four-week summer program developing the next generation of Moroccan problem-solving leaders through interactive sessions and mentorship.',
+          title: 'Atlas Leaders',
+          description: 'A four-week leadership program guiding Moroccan youth to analyse real problems, design solutions, and implement community projects through mentorship, building skills in leadership, research, and collaboration.',
         },
         {
-          title: 'Rahmat Al Walidayn',
-          description: 'Structured four-week Ramadan humanitarian initiative organizing iftars in collaboration with local bakeries and associations, and large-scale iftars with volunteer groups.',
-        },
-        {
-          title: 'National Cleanup Campaign',
-          description: 'National environmental campaign mobilizing UMY members around beach and public space cleanup actions in multiple cities through simultaneous coordinated action.',
+          title: 'Act 4 Earth',
+          description: 'Environmental campaign uniting UMY members to clean beaches and public spaces across Morocco, promoting environmental awareness and civic engagement.',
         },
       ],
     },

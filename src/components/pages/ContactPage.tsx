@@ -6,11 +6,11 @@ import { sanitizeText, validateInput, checkRateLimit } from '../../utils/sanitiz
 import './ContactPage.css';
 
 const SKILL_OPTIONS = [
-  { id: 'photography', label: 'Photography / التصوير الفوتوغرافي' },
-  { id: 'video_editing', label: 'Video Editing / المونتاج والتصميم' },
-  { id: 'web_development', label: 'Web development / تطوير المواقع' },
-  { id: 'social_media', label: 'Social Media Management / إدارة وسائل التواصل الاجتماعي' },
-  { id: 'content_writing', label: 'Content Writing / كتابة المحتوى' },
+  { id: 'photography', label: 'Photography' },
+  { id: 'video_editing', label: 'Video Editing' },
+  { id: 'web_development', label: 'Web development' },
+  { id: 'social_media', label: 'Social Media Management' },
+  { id: 'content_writing', label: 'Content Writing' },
 ];
 
 const REFERRAL_OPTIONS = [
@@ -242,7 +242,7 @@ export function ContactPage() {
         <div className="container">
           <h1>UMY Membership Application</h1>
           <p>
-            This is the official application form to join the Moroccan Youth Union (UMY). Applications are open to young people aged 16 to 30. Application deadline: November 30th.
+            This is the official application form to join the United Moroccan Youth (UMY). Applications are open to young people aged 16 to 30.
           </p>
         </div>
       </section>
@@ -258,27 +258,26 @@ export function ContactPage() {
                     <div className="contact-info-icon"><Mail /></div>
                     <div className="contact-info-content">
                       <div className="contact-info-label">Email</div>
-                      <a href="mailto:info@unitedmoroccan.org" className="contact-info-value">info@unitedmoroccan.org</a>
+                      <a href="mailto:contact@unitedmoroccanyouth.org" className="contact-info-value">contact@unitedmoroccanyouth.org</a>
                     </div>
                   </li>
                   <li className="contact-info-item">
                     <div className="contact-info-icon"><Phone /></div>
                     <div className="contact-info-content">
                       <div className="contact-info-label">Phone</div>
-                      <a href="tel:+2125XXXXXXXX" className="contact-info-value">+212 5XX-XXXXXX</a>
                     </div>
                   </li>
                   <li className="contact-info-item">
                     <div className="contact-info-icon"><MapPin /></div>
                     <div className="contact-info-content">
                       <div className="contact-info-label">Location</div>
-                      <p className="contact-info-value">Morocco</p>
+                      <p className="contact-info-value">Rabat</p>
                     </div>
                   </li>
                 </ul>
                 <div className="office-hours-box">
-                  <h4>Application Deadline</h4>
-                  <p>November 30th</p>
+                  Office Hours : 
+                  8am - 6pm 
                 </div>
               </div>
             </div>
@@ -324,23 +323,23 @@ export function ContactPage() {
                       <div className={`form-step ${currentStep === 1 ? 'active' : ''}`}>
                         <div className="form-step-content">
                           <div className="form-group">
-                            <label htmlFor="name">Full Name / الاسم الكامل *</label>
+                            <label htmlFor="name">Full Name *</label>
                             <input type="text" id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Your full name" />
                           </div>
                           <div className="form-group">
-                            <label htmlFor="age">Age / العمر *</label>
+                            <label htmlFor="age">Age  *</label>
                             <input type="number" id="age" name="age" required min={16} max={30} value={formData.age} onChange={handleChange} placeholder="16-30" />
                           </div>
                           <div className="form-group">
-                            <label htmlFor="email">Email / البريد الإلكتروني *</label>
+                            <label htmlFor="email">Email *</label>
                             <input type="email" id="email" name="email" required value={formData.email} onChange={handleChange} placeholder="your.email@example.com" />
                           </div>
                           <div className="form-group">
-                            <label htmlFor="phone">Phone / رقم الهاتف *</label>
+                            <label htmlFor="phone">Phone *</label>
                             <input type="tel" id="phone" name="phone" required value={formData.phone} onChange={handleChange} placeholder="+212 6XX-XXXXXX" />
                           </div>
                           <div className="form-group">
-                            <label htmlFor="cin_number">CIN Number / رقم البطاقة الوطنية *</label>
+                            <label htmlFor="cin_number">CIN *</label>
                             <input type="text" id="cin_number" name="cin_number" required value={formData.cin_number} onChange={handleChange} placeholder="National ID number" />
                           </div>
                         </div>
@@ -372,23 +371,23 @@ export function ContactPage() {
                       <div className={`form-step ${currentStep === 3 ? 'active' : ''}`}>
                         <div className="form-step-content">
                           <div className="form-group">
-                            <label htmlFor="commission_interest">Commission interest / اللجان التي تهمك *</label>
+                            <label htmlFor="commission_interest">Commission interest *</label>
                             <select id="commission_interest" name="commission_interest" required value={formData.commission_interest} onChange={handleChange}>
                               <option value="">Select...</option>
-                              <option value="mp">Moroccan Politics Commission / اللجنة السياسية المغربية</option>
-                              <option value="ir">International Relations Commission / لجنة العلاقات الدولية</option>
-                              <option value="sd">Social Development Commission / لجنة التنمية الاجتماعية</option>
+                              <option value="mp">Moroccan Politics Commission </option>
+                              <option value="ir">International Relations Commission </option>
+                              <option value="sd">Social Development Commission </option>
                             </select>
                           </div>
                           <div className="form-group">
-                            <label htmlFor="commission_motivation">Commission motivation / سبب الاهتمام *</label>
+                            <label htmlFor="commission_motivation">Commission motivation *</label>
                             <textarea id="commission_motivation" name="commission_motivation" required value={formData.commission_motivation} onChange={handleChange} rows={4} placeholder="Choose one commission and write a short motivation" />
                           </div>
                           <div className="form-group">
-                            <label htmlFor="position_applying">Position / المنصب *</label>
+                            <label htmlFor="position_applying">Position *</label>
                             <select id="position_applying" name="position_applying" required value={formData.position_applying} onChange={handleChange}>
-                              <option value="membership">Membership / عضوية</option>
-                              <option value="leadership">Leadership / منصب قيادي</option>
+                              <option value="membership">Membership </option>
+                              <option value="leadership">Leadership </option>
                             </select>
                           </div>
                         </div>
@@ -415,11 +414,11 @@ export function ContactPage() {
                       <div className={`form-step ${currentStep === 5 ? 'active' : ''}`}>
                         <div className="form-step-content">
                           <div className="form-group">
-                            <label htmlFor="previous_experiences">Previous experiences / تجارب سابقة</label>
+                            <label htmlFor="previous_experiences">Previous experiences </label>
                             <textarea id="previous_experiences" name="previous_experiences" value={formData.previous_experiences} onChange={handleChange} rows={4} placeholder="Share any previous experiences" />
                           </div>
                           <div className="form-group">
-                            <label>Skills / المهارات</label>
+                            <label>Skills </label>
                             <div className="skills-checkboxes">
                               {SKILL_OPTIONS.map((skill) => (
                                 <label key={skill.id} className="skill-checkbox">
@@ -440,7 +439,7 @@ export function ContactPage() {
                       <div className={`form-step ${currentStep === 6 ? 'active' : ''}`}>
                         <div className="form-step-content">
                           <div className="form-group">
-                            <label htmlFor="additional_info">Anything else? / أي شيء آخر؟</label>
+                            <label htmlFor="additional_info">Anything else? </label>
                             <textarea id="additional_info" name="additional_info" value={formData.additional_info} onChange={handleChange} rows={3} placeholder="Anything else you want us to know" />
                           </div>
                           <div className="form-group">
@@ -497,10 +496,7 @@ export function ContactPage() {
               <h4>What is the age requirement?</h4>
               <p>Applications are open to young people aged 16 to 30.</p>
             </li>
-            <li className="faq-item">
-              <h4>When is the deadline?</h4>
-              <p>November 30th. No applications will be accepted after this date.</p>
-            </li>
+            
           </ul>
         </div>
       </section>

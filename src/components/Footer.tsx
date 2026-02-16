@@ -65,25 +65,19 @@ export function Footer() {
               <h3 className="footer-heading">Resources</h3>
               <ul className="footer-links">
                 <li>
-                  <Link to="/about" className="footer-link">
-                    <ArrowRight className="footer-link-icon" />
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/events" className="footer-link">
+                  <Link to="/commissions" className="footer-link">
                     <ArrowRight className="footer-link-icon" />
                     Events
                   </Link>
                 </li>
                 <li>
-                  <Link to="/news" className="footer-link">
+                  <Link to="/" className="footer-link">
                     <ArrowRight className="footer-link-icon" />
                     News
                   </Link>
                 </li>
                 <li>
-                  <Link to="/members" className="footer-link">
+                  <Link to="/contact" className="footer-link">
                     <ArrowRight className="footer-link-icon" />
                     Membership
                   </Link>
@@ -100,7 +94,7 @@ export function Footer() {
                   <div>
                     <div className="footer-contact-label">Email</div>
                     <a href="mailto:info@unitedmoroccan.org" className="footer-contact-link">
-                      info@unitedmoroccan.org
+                      contact@unitedmoroccanyouth.org
                     </a>
                   </div>
                 </li>
@@ -108,7 +102,7 @@ export function Footer() {
                   <MapPin className="footer-contact-icon" />
                   <div>
                     <div className="footer-contact-label">Location</div>
-                    <span className="footer-contact-text">Morocco</span>
+                    <span className="footer-contact-text">Rabat</span>
                   </div>
                 </li>
               </ul>
@@ -119,7 +113,8 @@ export function Footer() {
           <div className="footer-bottom">
               <div className="footer-bottom-content">
                 <p className="footer-copyright">
-                  &copy; {new Date().getFullYear()} United Moroccan Youth. All rights reserved. Developed and supervised by bensbe3.
+                  &copy; {new Date().getFullYear()} United Moroccan Youth. All rights reserved.
+                   Developed and supervised by bensbe3.
                 </p>
                 <div className="footer-bottom-links">
                   <Link to="/terms" className="footer-bottom-link">Terms of Service</Link>
