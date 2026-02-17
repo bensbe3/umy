@@ -70,7 +70,7 @@ export function HomepageNewsFeed() {
       <div className="container">
         <div className="news-feed-header">
           <div className="section-label">Latest Updates</div>
-          <h2 className="section-title-center">News & Actualités</h2>
+          <h2 className="section-title-center">News & Actualities </h2>
           <p className="section-description">
             Stay updated with the latest news and updates from all our commissions.
           </p>

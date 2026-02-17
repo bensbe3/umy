@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+const BASE_URL = 'https://unitedmoroccanyouth.org'; // ✅ bon domaine
+
 interface SEOHeadProps {
   title: string;
   description: string;
@@ -21,87 +23,94 @@ export function SEOHead({
   type = 'website',
   author,
   publishedTime,
-  modifiedTime
+  modifiedTime,
 }: SEOHeadProps) {
   useEffect(() => {
-    // Set document title
     document.title = title;
 
-    // Helper to set or update meta tag
     const setMeta = (name: string, content: string, property = false) => {
       const attr = property ? 'property' : 'name';
-      let element = document.querySelector(`meta[${attr}="${name}"]`);
-      
-      if (!element) {
-        element = document.createElement('meta');
-        element.setAttribute(attr, name);
-        document.head.appendChild(element);
+      let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
       }
-      
-      element.setAttribute('content', content);
+      el.setAttribute('content', content);
     };
 
-    // Basic meta tags
+    const canonicalUrl = url ? `${BASE_URL}${url}` : BASE_URL;
+    const ogImage = image ?? `${BASE_URL}/images/logoUmy.png`;
+
+    // ✅ Basic
     setMeta('description', description);
     if (keywords) setMeta('keywords', keywords);
     if (author) setMeta('author', author);
 
-    // Open Graph tags
+    // ✅ Canonical link
+    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', canonicalUrl);
+
+    // ✅ Open Graph
     setMeta('og:title', title, true);
     setMeta('og:description', description, true);
     setMeta('og:type', type, true);
-    if (url) setMeta('og:url', url, true);
-    if (image) setMeta('og:image', image, true);
-    setMeta('og:site_name', 'Youth Parliament Morocco - UMY', true);
+    setMeta('og:url', canonicalUrl, true);
+    setMeta('og:image', ogImage, true);
+    setMeta('og:site_name', 'United Moroccan Youth', true); // ✅ nom cohérent
 
-    // Twitter Card tags
+    // ✅ Twitter
     setMeta('twitter:card', 'summary_large_image');
     setMeta('twitter:title', title);
     setMeta('twitter:description', description);
-    if (image) setMeta('twitter:image', image);
+    setMeta('twitter:image', ogImage);
 
-    // Article-specific tags
+    // ✅ Article-specific
     if (type === 'article') {
       if (publishedTime) setMeta('article:published_time', publishedTime, true);
       if (modifiedTime) setMeta('article:modified_time', modifiedTime, true);
       if (author) setMeta('article:author', author, true);
     }
 
-    // Structured data (JSON-LD)
+    // ✅ JSON-LD dynamique par page
     const structuredData = {
       '@context': 'https://schema.org',
       '@type': type === 'article' ? 'Article' : 'WebPage',
       headline: title,
-      description: description,
-      ...(image && { image: image }),
-      ...(url && { url: url }),
-      ...(author && {
-        author: {
-          '@type': 'Person',
-          name: author
-        }
-      }),
+      description,
+      url: canonicalUrl,
+      image: ogImage,
+      ...(author && { author: { '@type': 'Person', name: author } }),
       ...(publishedTime && { datePublished: publishedTime }),
       ...(modifiedTime && { dateModified: modifiedTime }),
       publisher: {
         '@type': 'Organization',
-        name: 'Youth Parliament Morocco',
+        name: 'United Moroccan Youth',
         logo: {
           '@type': 'ImageObject',
-          url: `${window.location.origin}/images/logoUmy.png`
-        }
-      }
+          url: `${BASE_URL}/images/logoUmy.png`,
+        },
+      },
     };
 
-    let scriptTag = document.querySelector('script[type="application/ld+json"]');
+    // ✅ On cible le bon script (pas celui de l'Organization dans index.html)
+    let scriptTag = document.querySelector<HTMLScriptElement>(
+      'script[type="application/ld+json"][data-page]'
+    );
     if (!scriptTag) {
       scriptTag = document.createElement('script');
       scriptTag.setAttribute('type', 'application/ld+json');
+      scriptTag.setAttribute('data-page', 'true');
       document.head.appendChild(scriptTag);
     }
     scriptTag.textContent = JSON.stringify(structuredData);
 
   }, [title, description, keywords, image, url, type, author, publishedTime, modifiedTime]);
 
-  return null; // This component doesn't render anything
+  return null;
 }
