@@ -3,6 +3,7 @@ import Header from './components/Header';
 import { Footer } from './components/Footer';
 import { HomePage } from './components/pages/HomePage';
 import { CommissionsPage } from './components/pages/CommissionsPage';
+import Orientation from "./components/pages/Orientation"
 import { GalleryPage } from './components/pages/GalleryPage';
 import { SponsorPage } from './components/pages/SponsorPage';
 import { ContactPage } from './components/pages/ContactPage';
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/commissions" element={<CommissionsPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/orientation" element={<Orientation />} />
             <Route path="/sponsor" element={<SponsorPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/decryptmundi" element={<DecryptMundiPage />} />

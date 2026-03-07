@@ -35,16 +35,16 @@ const menuData: MenuItem[] = [
     ],
   },
   {
+    label: 'Orientation',
+    path: '/orientation',
+  },
+  {
     label: 'DecryptMundi',
     path: '/decryptmundi',
   },
   {
     label: 'Gallery',
     path: '/gallery',
-  },
-  {
-    label: 'Sponsors',
-    path: '/sponsor',
   },
   {
     label: 'Contact',

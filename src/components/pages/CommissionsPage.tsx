@@ -36,15 +36,15 @@ export function CommissionsPage() {
         'To strengthen Morocco\'s position on the global stage through strategic partnerships, cultural exchange, and international cooperation.',
       programs: [
         {
-          title: 'XXL MUN',
+          title: 'UMY MUN',
           description: 'Large-scale Model United Nations simulation bringing together participants from multiple universities to debate global issues and practice diplomatic negotiation.',
         },
         {
-          title: 'Inside the Negotiation',
+          title: 'Inside the Negotiations',
           description: 'Historical simulation of the 1975 Madrid Accords featuring role-playing, strategy cards, and improvisation in a unique interactive format.',
         },
         {
-          title: 'Embassy Visits',
+          title: 'Diplomatic Encounters',
           description: 'Educational visits to diplomatic missions and embassies providing direct exposure to international relations and diplomatic protocols.',
         },
         {

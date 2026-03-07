@@ -106,9 +106,9 @@ export function DecryptMundiPage() {
   return (
     <>
       <SEOHead
-        title="DécryptMundi - Analysis & Commentary | Youth Parliament Morocco"
+        title="DécryptMundi - Analysis & Commentary | United Moroccan Youth"
         description="In-depth analysis, commentary, and investigative journalism from Youth Parliament Morocco's editorial team."
-        keywords="Morocco, youth parliament, political analysis, commentary, journalism, DécryptMundi"
+        keywords="Morocco, parliament, political analysis, commentary, journalism, DécryptMundi, United Moroccan Youth"
         type="website"
       />
 
@@ -126,7 +126,7 @@ export function DecryptMundiPage() {
         </section>
 
         {/* Category Filters */}
-        <div className="category-filters">
+        {/* <div className="category-filters">
           <div className="category-filters-container">
             <button
               className={`category-filter-btn ${selectedCategory === 'all' ? 'active' : ''}`}
@@ -144,7 +144,7 @@ export function DecryptMundiPage() {
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {loading && page === 1 ? (
           <div style={{ padding: '4rem', textAlign: 'center' }}>

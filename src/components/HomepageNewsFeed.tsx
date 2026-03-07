@@ -37,7 +37,7 @@ export function HomepageNewsFeed() {
         .select('*')
         .eq('status', 'published')
         .order('published_at', { ascending: false })
-        .limit(9);
+        .limit(4); // ← only the 4 most recent
 
       if (error) throw error;
       setActualites(data || []);
@@ -62,7 +62,7 @@ export function HomepageNewsFeed() {
   }
 
   if (actualites.length === 0) {
-    return null; // Don't show section if no news
+    return null;
   }
 
   return (
@@ -70,7 +70,7 @@ export function HomepageNewsFeed() {
       <div className="container">
         <div className="news-feed-header">
           <div className="section-label">Latest Updates</div>
-          <h2 className="section-title-center">News & Actualities </h2>
+          <h2 className="section-title-center">News &amp; Actualities</h2>
           <p className="section-description">
             Stay updated with the latest news and updates from all our commissions.
           </p>
@@ -95,11 +95,7 @@ export function HomepageNewsFeed() {
                     alt={actualite.title}
                     className="news-image"
                     onError={(e) => {
-                      console.error('Homepage image failed to load:', actualite.image_url);
                       (e.currentTarget as HTMLImageElement).style.display = 'none';
-                    }}
-                    onLoad={() => {
-                      console.log('Homepage image loaded:', actualite.image_url);
                     }}
                   />
                 )}
@@ -126,13 +122,6 @@ export function HomepageNewsFeed() {
                     to={`/actualite/${actualite.id}`}
                     className="news-link"
                     style={{ color: commissionColor }}
-                    onClick={(e) => {
-                      console.log('🖱️ Clicked Read More:', {
-                        title: actualite.title,
-                        id: actualite.id,
-                        url: `/actualite/${actualite.id}`
-                      });
-                    }}
                   >
                     Read More <ArrowRight size={16} />
                   </Link>

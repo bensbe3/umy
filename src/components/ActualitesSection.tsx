@@ -67,7 +67,7 @@ export function ActualitesSection({
       {/* Section Header - Compact */}
       <div className="actualites-header-editorial" style={{ borderBottomColor: commissionColor }}>
         <h2 className="actualites-title-editorial" style={{ color: commissionColor }}>
-          Actualités {commissionName}
+          Actualities {commissionName}
         </h2>
       </div>
 

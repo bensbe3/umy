@@ -16,8 +16,7 @@ export function Footer() {
               <div className="footer-logo">
                 <img src="/images/logoUmy.png" alt="UMY Logo" className="footer-logo-image" />
                 <div className="footer-logo-text">
-                  <div className="footer-logo-title">United Moroccan</div>
-                  <div className="footer-logo-subtitle">Youth</div>
+                  <div className="footer-logo-title">United Moroccan Youth</div>
                 </div>
               </div>
               <p className="footer-description">
