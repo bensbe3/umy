@@ -3,10 +3,10 @@ import "./Orientation.css";
 import { timelineImages } from "../images";
 
 const IMAGES = {
-  hero:         timelineImages["6.webp"],   // hero split
-  scholarships: timelineImages["28.webp"],   // section 02 accent
-  testPrep:     timelineImages["28.webp"],   // (no longer used — test prep is inside section 03)
-  harvard:      timelineImages["7.webp"],   // exposure full-bleed + CTA background
+  hero:         timelineImages["6.webp"],
+  scholarships: timelineImages["28.webp"],
+  testPrep:     timelineImages["28.webp"],
+  harvard:      timelineImages["7.webp"],
 };
 
 export default function AboutPage() {
@@ -172,47 +172,49 @@ export default function AboutPage() {
       {/* ═══════════════════════════════════════════════════
           02 — SHARING OPPORTUNITIES THAT MATTER
           ═══════════════════════════════════════════════════ */}
-      <section className="num-section num-section--light">
-        <div className="num-section-inner">
-          <div className="ns-num">02</div>
-
-          <div className="ns-head">
-            <span className="section-tag">Opportunities</span>
-            <h2 className="section-heading">
-              Sharing Opportunities<br />
-              <span className="line-red">That Matter.</span>
-            </h2>
+      <section className="num-section num-section--light num-section--02-with-image">
+        <div className="section-02-layout">
+          <div className="section-02-image">
+            <img src={IMAGES.scholarships} alt="Scholarship and opportunity programs" />
+            <div className="section-02-image-accent" aria-hidden="true">02</div>
           </div>
+          <div className="section-02-content">
+            <div className="num-section-inner">
+              <div className="ns-num ns-num--hide">02</div>
+              <div className="ns-head">
+                <span className="section-tag">Opportunities</span>
+                <h2 className="section-heading">
+                  Sharing Opportunities<br />
+                  <span className="line-red">That Matter.</span>
+                </h2>
+              </div>
+              <div className="ns-body">
+                <p className="section-body">
+                  From scholarships and exchange programs to conferences,
+                  internships, bootcamps, and competitions, we actively share
+                  curated opportunities that can truly impact a student's academic
+                  and professional journey.
+                </p>
 
-          <div className="ns-body">
-            <div className="ns-img-accent">
-              <img src={IMAGES.scholarships} alt="Scholarship opportunities" />
-            </div>
+                <div className="focus-list">
+                  <h3 className="focus-heading">We focus on</h3>
+                  <ul>
+                    <li>International scholarships</li>
+                    <li>Summer programs</li>
+                    <li>Youth conferences &amp; leadership programs</li>
+                    <li>Academic competitions</li>
+                    <li>Study abroad calls</li>
+                    <li>Application deadlines &amp; alerts</li>
+                  </ul>
+                </div>
 
-            <p className="section-body">
-              From scholarships and exchange programs to conferences,
-              internships, bootcamps, and competitions, we actively share
-              curated opportunities that can truly impact a student's academic
-              and professional journey.
-            </p>
-
-            <div className="focus-list">
-              <h3 className="focus-heading">We focus on</h3>
-              <ul>
-                <li>International scholarships</li>
-                <li>Summer programs</li>
-                <li>Youth conferences &amp; leadership programs</li>
-                <li>Academic competitions</li>
-                <li>Study abroad calls</li>
-                <li>Application deadlines &amp; alerts</li>
-              </ul>
-            </div>
-
-            <div className="section-callout" style={{ clear: "both" }}>
-              <p>
-                Our goal is simple:{" "}
-                <strong>Make opportunities visible. Make access easier.</strong>
-              </p>
+                <div className="section-callout" style={{ clear: "both" }}>
+                  <p>
+                    Our goal is simple:{" "}
+                    <strong>Make opportunities visible. Make access easier.</strong>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -222,7 +224,7 @@ export default function AboutPage() {
       {/* ═══════════════════════════════════════════════════
           03 — ACADEMIC ORIENTATION & POST-BAC GUIDANCE
           ═══════════════════════════════════════════════════ */}
-      <section className="num-section num-section--dark">
+      <section className="num-section num-section--dark-red">
         <div className="num-section-inner">
           <div className="ns-num">03</div>
 

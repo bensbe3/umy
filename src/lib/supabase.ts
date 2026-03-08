@@ -106,7 +106,7 @@ export interface Article {
 
 export interface Actualite {
   id: string;
-  commission_id: 'ir' | 'mp' | 'sd';
+  commission_id: 'ir' | 'mp' | 'sd' | 'orientation';
   title: string;
   content: string;
   image_url?: string;

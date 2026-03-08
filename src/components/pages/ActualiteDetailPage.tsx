@@ -9,12 +9,14 @@ const COMMISSION_COLORS: Record<string, string> = {
   ir: '#0ea5e9',
   mp: '#8B0000',
   sd: '#d4af37',
+  orientation: '#6366f1',
 };
 
 const COMMISSION_NAMES: Record<string, string> = {
   ir: 'International Relations',
   mp: 'Moroccan Politics',
   sd: 'Social Development',
+  orientation: 'Orientation',
 };
 
 export function ActualiteDetailPage() {
@@ -106,6 +108,7 @@ export function ActualiteDetailPage() {
 
   const commissionColor = COMMISSION_COLORS[actualite.commission_id] || '#0ea5e9';
   const commissionName = COMMISSION_NAMES[actualite.commission_id] || 'Commission';
+  const isOrientation = actualite.commission_id === 'orientation';
 
   return (
     <div className="actualite-detail-page">
@@ -114,11 +117,11 @@ export function ActualiteDetailPage() {
       {/* Back Button */}
       <div className="actualite-detail-container">
         <button
-          onClick={() => navigate(`/commissions#${actualite.commission_id}`)}
+          onClick={() => navigate(isOrientation ? '/' : `/commissions#${actualite.commission_id}`)}
           className="btn-back"
         >
           <ArrowLeft size={18} />
-          Back to {commissionName}
+          Back to {isOrientation ? 'News & Actualities' : commissionName}
         </button>
       </div>
 

@@ -1,7 +1,10 @@
-// HomePage.tsx - Updated with DecryptMundi Section
+// HomePage.tsx - Updated with Pillars + DecryptMundi Sections
 import { Link } from 'react-router-dom';
 import { Suspense } from 'react';
-import { ArrowRight, Users, Target, Award, Globe, Landmark, Handshake, Users2 } from 'lucide-react';
+import {
+  ArrowRight, Users, Target, Award, Globe, Landmark, Handshake,
+  Users2, Compass, Scale, BookOpen, GraduationCap
+} from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import PixelCard from '../PixelCard';
 import Hyperspeed from '../Hyperspeed';
@@ -82,7 +85,7 @@ export function HomePage() {
       <section className="hero-section">
         <div className="hero-overlay">
           <ImageWithFallback
-            src={timelineImages['20.webp']}
+            src={timelineImages['1.webp']}
             alt="United Moroccan Youth - Hero"
             className="hero-image"
             fetchPriority="high"
@@ -97,12 +100,13 @@ export function HomePage() {
               Building bridges, fostering excellence, and celebrating Moroccan heritage through community engagement and professional development.
             </p>
             <div className="hero-actions">
-              <Link to="/commissions" className="btn btn-primary">
-                Explore Our Commissions
+              <Link to="/commissions" className="btn btn-secondary">
+                Civic Leadership Commissions
                 <ArrowRight className="btn-icon" />
               </Link>
-              <Link to="/contact" className="btn btn-secondary">
-                Get Involved
+              <Link to="/orientation" className="btn btn-primary">
+                Orientation and Opportunities
+                <ArrowRight className="btn-icon" />
               </Link>
             </div>
           </div>
@@ -119,15 +123,160 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* News Feed Section - Second Section */}
+      {/* ═══════════════════════════════════════════════════
+          UMY'S TWO PILLARS OF IMPACT
+          ═══════════════════════════════════════════════════ */}
+      <section className="pillars-section">
+        <div className="pillars-container">
+
+          {/* Header */}
+          <div className="pillars-header">
+            <div className="pillars-label">Our Structure</div>
+            <h2 className="pillars-title">
+              UMY's Two Pillars of <span className="pillars-title-red">Impact</span>
+            </h2>
+            <p className="pillars-subtitle">
+              United Moroccan Youth channels its mission through two
+              complementary pillars one building futures, the other shaping
+              citizens.
+            </p>
+          </div>
+
+          {/* ── THE TREE ── */}
+          <div className="tree">
+            {/* Root — UMY logo in the core */}
+            <div className="tree-root">
+              <div className="tree-root-inner">
+                <img
+                  src="/images/logoUmy.png"
+                  alt="United Moroccan Youth"
+                  className="tree-root-logo"
+                />
+                <span className="tree-root-sub">United Moroccan Youth</span>
+              </div>
+            </div>
+
+            {/* Trunk */}
+            <div className="tree-trunk-line" />
+
+            {/* Split node */}
+            <div className="tree-split">
+              <div className="tree-split-dot" />
+              <div className="tree-split-line tree-split-line--left" />
+              <div className="tree-split-line tree-split-line--right" />
+            </div>
+
+            {/* Vertical drops into cards */}
+            <div className="tree-drops">
+              <div className="tree-drop tree-drop--left" />
+              <div className="tree-drop tree-drop--right" />
+            </div>
+
+            {/* Leaf labels */}
+            <div className="tree-leaves">
+              <div className="tree-leaf tree-leaf--green">
+                <Compass size={0} />
+              </div>
+              <div className="tree-leaf tree-leaf--red">
+                <Scale size={0} />
+              </div>
+            </div>
+          </div>
+
+          {/* ── PILLAR CARDS ── */}
+          <div className="pillars-grid">
+
+            {/* Pillar 1 — Orientation */}
+            <Link to="/orientation" className="pillar-card pillar-card--green">
+              <div className="pillar-card-accent" />
+              <div className="pillar-num">01</div>
+
+              <div className="pillar-icon-box pillar-icon-box--green">
+                <Compass size={24} />
+              </div>
+
+              <h3 className="pillar-name">
+                Orientation
+                <span className="pillar-name-amp">&amp; Opportunities</span>
+              </h3>
+
+              <p className="pillar-desc">
+                Guiding students toward the right academic path, sharing
+                life changing opportunities, and preparing them for
+                international success.
+              </p>
+
+              <div className="pillar-features">
+                {[
+                  { icon: GraduationCap, text: 'Post-Bac Guidance' },
+                  { icon: Globe,          text: 'Scholarships & Programs' },
+                  { icon: BookOpen,       text: 'Test Prep & Strategy' },
+                ].map((f, i) => (
+                  <div key={i} className="pillar-feature">
+                    <div className="pillar-feature-dot pillar-feature-dot--green" />
+                    <f.icon size={14} className="pillar-feature-icon" />
+                    <span>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pillar-cta pillar-cta--green">
+                <span>Explore</span>
+                <ArrowRight size={15} />
+              </div>
+            </Link>
+
+            {/* Pillar 2 — Civic Leadership */}
+            <Link to="/commissions" className="pillar-card pillar-card--red">
+              <div className="pillar-card-accent" />
+              <div className="pillar-num">02</div>
+
+              <div className="pillar-icon-box pillar-icon-box--red">
+                <Scale size={24} />
+              </div>
+
+              <h3 className="pillar-name">
+                Civic Leadership
+                <span className="pillar-name-amp">Program</span>
+              </h3>
+
+              <p className="pillar-desc">
+                Structured commissions tackling politics, diplomacy, and social
+                development building the next generation of engaged citizens.
+              </p>
+
+              <div className="pillar-features">
+                {[
+                  { icon: Landmark,   text: 'Moroccan Politics' },
+                  { icon: Handshake,  text: 'International Relations' },
+                  { icon: Users,      text: 'Social Development' },
+                ].map((f, i) => (
+                  <div key={i} className="pillar-feature">
+                    <div className="pillar-feature-dot pillar-feature-dot--red" />
+                    <f.icon size={14} className="pillar-feature-icon" />
+                    <span>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pillar-cta pillar-cta--red">
+                <span>Explore</span>
+                <ArrowRight size={15} />
+              </div>
+            </Link>
+
+          </div>
+        </div>
+      </section>
+
+      {/* News Feed Section */}
       <HomepageNewsFeed />
 
       {/* Commissions Section */}
       <section className="commissions-section">
         <div className="container">
           <div className="commissions-header">
-            <div className="section-label">Our Commissions</div>
-            <h2 className="section-title-center">Three Pillars of Impact</h2>
+            <div className="section-label">Civic Leadership Commissions</div>
             <p className="section-description">
               Explore our specialized commissions dedicated to advancing political discourse, international cooperation, and social development.
             </p>
@@ -186,7 +335,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* DecryptMundi Section - NEW */}
+      {/* DecryptMundi Section */}
       <DecryptMundiHomepage />
 
       {/* Vertical Timeline Section */}

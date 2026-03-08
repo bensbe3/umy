@@ -117,7 +117,7 @@ CREATE POLICY "Authors can delete their own articles, super admins can delete al
 -- ============================================
 CREATE TABLE IF NOT EXISTS commission_actualites (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  commission_id TEXT NOT NULL CHECK (commission_id IN ('ir', 'mp', 'sd')),
+  commission_id TEXT NOT NULL CHECK (commission_id IN ('ir', 'mp', 'sd', 'orientation')),
   title TEXT NOT NULL,
   content TEXT NOT NULL,
   image_url TEXT,

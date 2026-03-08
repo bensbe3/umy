@@ -237,6 +237,33 @@ function ContentManagementInterface() {
   const [editingActualite, setEditingActualite] = useState<Actualite | null>(null);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   
+  // Persist draft when switching tab/page so content is not lost
+  const [draftActualite, setDraftActualite] = useState<{
+    commissionId: 'ir' | 'mp' | 'sd' | 'orientation';
+    title: string;
+    content: string;
+    imageUrl: string;
+    status: 'draft' | 'published';
+  } | null>(null);
+  const [draftArticle, setDraftArticle] = useState<{
+    title: string;
+    slug: string;
+    content: string;
+    excerpt: string;
+    coverImageUrl: string;
+    featuredImageUrl: string;
+    authorName: string;
+    authorBio: string;
+    editorName: string;
+    category: string;
+    metaTitle: string;
+    metaDescription: string;
+    metaKeywords: string;
+    readTimeMinutes: number;
+    isFeatured: boolean;
+    status: 'draft' | 'published';
+  } | null>(null);
+  
   // Post type selector
   const [showPostTypeSelector, setShowPostTypeSelector] = useState(false);
   
@@ -264,11 +291,12 @@ function ContentManagementInterface() {
     }
   }, [canManageActualites, canManageArticles, canViewContacts]);
 
-  // Commission info
+  // Commission info (orientation = News & Actualities only, not shown on commission pages)
   const commissions = [
     { id: 'ir' as const, name: 'International Relations', color: '#0ea5e9' },
     { id: 'mp' as const, name: 'Moroccan Politics', color: '#dc2626' },
-    { id: 'sd' as const, name: 'Social Development', color: '#16a34a' }
+    { id: 'sd' as const, name: 'Social Development', color: '#16a34a' },
+    { id: 'orientation' as const, name: 'Orientation (News & Actualities only)', color: '#6366f1' }
   ];
 
   const allowedCommissions = !canManageActualites ? [] :
@@ -527,8 +555,8 @@ function ContentManagementInterface() {
             </div>
           )}
 
-          {/* Tabs - Always show if user has any permissions (even when editor is open, user can switch tabs) */}
-          {!showActualiteEditor && !showArticleEditor && (canManageActualites || canManageArticles || canViewContacts) && (
+          {/* Tabs - Always visible so user can switch tab without losing draft (draft is saved in parent) */}
+          {(canManageActualites || canManageArticles || canViewContacts) && (
             <div className="content-tabs">
               {canManageActualites && (
                 <button
@@ -582,12 +610,15 @@ function ContentManagementInterface() {
           {showActualiteEditor ? (
             <ActualiteEditor
               actualite={editingActualite}
+              initialDraft={draftActualite}
+              onDraftChange={setDraftActualite}
               allowedCommissions={allowedCommissions}
               onClose={() => {
                 setShowActualiteEditor(false);
                 setEditingActualite(null);
               }}
               onSave={() => {
+                setDraftActualite(null);
                 setShowActualiteEditor(false);
                 setEditingActualite(null);
                 fetchActualites();
@@ -596,11 +627,14 @@ function ContentManagementInterface() {
           ) : showArticleEditor ? (
             <ArticleEditor
               article={editingArticle}
+              initialDraft={draftArticle}
+              onDraftChange={setDraftArticle}
               onClose={() => {
                 setShowArticleEditor(false);
                 setEditingArticle(null);
               }}
               onSave={() => {
+                setDraftArticle(null);
                 setShowArticleEditor(false);
                 setEditingArticle(null);
                 fetchArticles();
@@ -656,7 +690,7 @@ function ContentManagementInterface() {
                           <div className="post-commission-badge" style={{ backgroundColor: commission?.color }}>
                             {commission?.name || actualite.commission_id.toUpperCase()}
                           </div>
-                          <div className="post-status-badge">{actualite.status}</div>
+                          <div className={`post-status-badge post-status-badge--${actualite.status}`}>{actualite.status}</div>
                           <h3>{actualite.title}</h3>
                           <div
                             className="post-preview"
@@ -704,7 +738,7 @@ function ContentManagementInterface() {
                       
                       return (
                         <div key={article.id} className="post-card">
-                          <div className="post-status-badge">{article.status}</div>
+                          <div className={`post-status-badge post-status-badge--${article.status}`}>{article.status}</div>
                           <h3>{article.title}</h3>
                           {article.excerpt && <p className="post-preview">{article.excerpt}</p>}
                           {canEdit && (
@@ -840,36 +874,51 @@ function ContactSubmissionsView({
       </div>
 
       <div className="contact-submissions-layout">
-      <div className="contact-submissions-list">
-        {filteredSubmissions.map((submission) => (
-          <div
-            key={submission.id}
-            className={`contact-submission-card ${selectedContact?.id === submission.id ? 'selected' : ''}`}
-            onClick={() => onSelectContact(submission)}
-          >
-            <div className="contact-card-header">
-              <div className="contact-card-name">{submission.name}</div>
-              <div
-                className="contact-status-badge"
-                style={{ backgroundColor: getStatusColor(submission.status) }}
+      <div className="contact-submissions-table-wrapper">
+        <table className="contact-submissions-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Commission / Subject</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredSubmissions.map((submission) => (
+              <tr
+                key={submission.id}
+                className={selectedContact?.id === submission.id ? 'selected' : ''}
+                onClick={() => onSelectContact(submission)}
               >
-                {getStatusIcon(submission.status)}
-                {submission.status.replace('_', ' ')}
-              </div>
-            </div>
-            <div className="contact-card-email">{submission.email}</div>
-            <div className="contact-card-subject">{submission.commission_interest || submission.subject || 'UMY Application'}</div>
-            <div className="contact-card-date">
-              {new Date(submission.created_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </div>
-          </div>
-        ))}
+                <td className="contact-table-date">
+                  {new Date(submission.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </td>
+                <td className="contact-table-name">{submission.name}</td>
+                <td className="contact-table-email">
+                  <a href={`mailto:${submission.email}`}>{submission.email}</a>
+                </td>
+                <td className="contact-table-subject">{submission.commission_interest || submission.subject || 'UMY Application'}</td>
+                <td>
+                  <span
+                    className="contact-status-badge contact-table-status"
+                    style={{ backgroundColor: getStatusColor(submission.status) }}
+                  >
+                    {getStatusIcon(submission.status)}
+                    {submission.status.replace('_', ' ')}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       <div className="contact-detail-wrapper">
@@ -1032,26 +1081,45 @@ function ContactSubmissionsView({
  */
 function ActualiteEditor({
   actualite,
+  initialDraft,
+  onDraftChange,
   allowedCommissions,
   onClose,
   onSave
 }: {
   actualite: Actualite | null;
-  allowedCommissions: Array<{ id: 'ir' | 'mp' | 'sd'; name: string; color: string }>;
+  initialDraft?: { commissionId: 'ir' | 'mp' | 'sd' | 'orientation'; title: string; content: string; imageUrl: string; status: 'draft' | 'published' } | null;
+  onDraftChange?: (draft: { commissionId: 'ir' | 'mp' | 'sd' | 'orientation'; title: string; content: string; imageUrl: string; status: 'draft' | 'published' } | null) => void;
+  allowedCommissions: Array<{ id: 'ir' | 'mp' | 'sd' | 'orientation'; name: string; color: string }>;
   onClose: () => void;
   onSave: () => void;
 }) {
   const { user, appUser } = useAuth();
-  const [commissionId, setCommissionId] = useState<'ir' | 'mp' | 'sd'>(
-    actualite?.commission_id || allowedCommissions[0]?.id || 'ir'
+  const [commissionId, setCommissionId] = useState<'ir' | 'mp' | 'sd' | 'orientation'>(
+    actualite?.commission_id || initialDraft?.commissionId || allowedCommissions[0]?.id || 'ir'
   );
-  const [title, setTitle] = useState(actualite?.title || '');
-  const [content, setContent] = useState(actualite?.content || '');
-  const [imageUrl, setImageUrl] = useState(actualite?.image_url || '');
+  const [title, setTitle] = useState(actualite?.title || initialDraft?.title || '');
+  const [content, setContent] = useState(actualite?.content || initialDraft?.content || '');
+  const [imageUrl, setImageUrl] = useState(actualite?.image_url || initialDraft?.imageUrl || '');
   const [status, setStatus] = useState<'draft' | 'published'>(
-    actualite?.status === 'published' ? 'published' : 'draft'
+    actualite?.status === 'published' ? 'published' : (initialDraft?.status || 'draft')
   );
   const [saving, setSaving] = useState(false);
+
+  // Persist draft to parent when editing new post (so switching tab doesn't lose content)
+  useEffect(() => {
+    if (actualite || !onDraftChange) return;
+    const t = setTimeout(() => {
+      onDraftChange({
+        commissionId,
+        title,
+        content,
+        imageUrl,
+        status
+      });
+    }, 400);
+    return () => clearTimeout(t);
+  }, [actualite, commissionId, title, content, imageUrl, status, onDraftChange]);
 
   const handleSave = async () => {
     console.log('=== SAVE CLICKED ===');
@@ -1074,8 +1142,13 @@ function ActualiteEditor({
       return;
     }
 
-    // Validate commission access
-    if (appUser?.commissions_role !== 'full' && commissionId !== appUser?.commissions_role) {
+    // Validate commission access (orientation only for full access)
+    if (commissionId === 'orientation') {
+      if (appUser?.commissions_role !== 'full') {
+        toast.error('Only full-access admins can post to Orientation (News & Actualities)');
+        return;
+      }
+    } else if (appUser?.commissions_role !== 'full' && commissionId !== appUser?.commissions_role) {
       console.error('Commission access denied:', {
         userCommission: appUser?.commissions_role,
         targetCommission: commissionId
@@ -1196,7 +1269,7 @@ function ActualiteEditor({
           <label>Commission *</label>
           <select
             value={commissionId}
-            onChange={(e) => setCommissionId(e.target.value as 'ir' | 'mp' | 'sd')}
+            onChange={(e) => setCommissionId(e.target.value as 'ir' | 'mp' | 'sd' | 'orientation')}
             disabled={allowedCommissions.length === 1}
           >
             {allowedCommissions.map((comm) => (
@@ -1287,40 +1360,89 @@ function ActualiteEditor({
   );
 }
 
+type ArticleDraft = {
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  coverImageUrl: string;
+  featuredImageUrl: string;
+  authorName: string;
+  authorBio: string;
+  editorName: string;
+  category: string;
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+  readTimeMinutes: number;
+  isFeatured: boolean;
+  status: 'draft' | 'published';
+};
+
 /**
  * Article Editor Component
  * For creating/editing DecryptMundi articles
  */
 function ArticleEditor({
   article,
+  initialDraft,
+  onDraftChange,
   onClose,
   onSave
 }: {
   article: Article | null;
+  initialDraft?: ArticleDraft | null;
+  onDraftChange?: (draft: ArticleDraft | null) => void;
   onClose: () => void;
   onSave: () => void;
 }) {
   const { user, appUser } = useAuth();
-  const [title, setTitle] = useState(article?.title || '');
-  const [slug, setSlug] = useState(article?.slug || '');
-  const [content, setContent] = useState(article?.content || '');
-  const [excerpt, setExcerpt] = useState(article?.excerpt || '');
-  const [coverImageUrl, setCoverImageUrl] = useState(article?.cover_image_url || '');
-  const [featuredImageUrl, setFeaturedImageUrl] = useState(article?.featured_image_url || '');
-  const [authorName, setAuthorName] = useState(article?.author_name || '');
-  const [authorBio, setAuthorBio] = useState(article?.author_bio || '');
-  const [editorName, setEditorName] = useState(article?.editor_name || '');
-  const [category, setCategory] = useState(article?.category || '');
-  const [metaTitle, setMetaTitle] = useState(article?.meta_title || '');
-  const [metaDescription, setMetaDescription] = useState(article?.meta_description || '');
-  const [metaKeywords, setMetaKeywords] = useState(article?.meta_keywords || '');
-  const [readTimeMinutes, setReadTimeMinutes] = useState(article?.read_time_minutes || 5);
-  const [isFeatured, setIsFeatured] = useState(article?.is_featured || false);
+  const [title, setTitle] = useState(article?.title || initialDraft?.title || '');
+  const [slug, setSlug] = useState(article?.slug || initialDraft?.slug || '');
+  const [content, setContent] = useState(article?.content || initialDraft?.content || '');
+  const [excerpt, setExcerpt] = useState(article?.excerpt || initialDraft?.excerpt || '');
+  const [coverImageUrl, setCoverImageUrl] = useState(article?.cover_image_url || initialDraft?.coverImageUrl || '');
+  const [featuredImageUrl, setFeaturedImageUrl] = useState(article?.featured_image_url || initialDraft?.featuredImageUrl || '');
+  const [authorName, setAuthorName] = useState(article?.author_name || initialDraft?.authorName || '');
+  const [authorBio, setAuthorBio] = useState(article?.author_bio || initialDraft?.authorBio || '');
+  const [editorName, setEditorName] = useState(article?.editor_name || initialDraft?.editorName || '');
+  const [category, setCategory] = useState(article?.category || initialDraft?.category || '');
+  const [metaTitle, setMetaTitle] = useState(article?.meta_title || initialDraft?.metaTitle || '');
+  const [metaDescription, setMetaDescription] = useState(article?.meta_description || initialDraft?.metaDescription || '');
+  const [metaKeywords, setMetaKeywords] = useState(article?.meta_keywords || initialDraft?.metaKeywords || '');
+  const [readTimeMinutes, setReadTimeMinutes] = useState(article?.read_time_minutes ?? initialDraft?.readTimeMinutes ?? 5);
+  const [isFeatured, setIsFeatured] = useState(article?.is_featured ?? initialDraft?.isFeatured ?? false);
   const [status, setStatus] = useState<'draft' | 'published'>(
-    article?.status === 'published' ? 'published' : 'draft'
+    article?.status === 'published' ? 'published' : (initialDraft?.status || 'draft')
   );
   const [saving, setSaving] = useState(false);
   const [categories, setCategories] = useState<ArticleCategory[]>([]);
+
+  // Persist draft to parent when editing new article (so switching tab doesn't lose content)
+  useEffect(() => {
+    if (article || !onDraftChange) return;
+    const t = setTimeout(() => {
+      onDraftChange({
+        title,
+        slug,
+        content,
+        excerpt,
+        coverImageUrl,
+        featuredImageUrl,
+        authorName,
+        authorBio,
+        editorName,
+        category,
+        metaTitle,
+        metaDescription,
+        metaKeywords,
+        readTimeMinutes,
+        isFeatured,
+        status
+      });
+    }, 400);
+    return () => clearTimeout(t);
+  }, [article, title, slug, content, excerpt, coverImageUrl, featuredImageUrl, authorName, authorBio, editorName, category, metaTitle, metaDescription, metaKeywords, readTimeMinutes, isFeatured, status, onDraftChange]);
 
   // Fetch categories on mount
   useEffect(() => {
