@@ -6,19 +6,23 @@
    ============================================================ */
 
    :root {
-    /* Match UMY's Two Pillars of Impact: cream background, green & red accents */
-    --bg:          #f5e6d3;
-    --surface:     #f0ddd0;
-    --surface-2:   #e8d4c4;
-    --beige:       #f5e6d3;
-    --muted:       #5a4a3a;
-    --white:       #022c22;
-    --red:         #8B0000;
-    --red-b:       #a80000;
-    --green:       #1b5e20;
-    --green-b:     #2e7d32;
+    /* Dark-green theme + beige/pink/red/green accents */
+    --bg:          #022c22; /* dark green */
+    --surface:     #03352a; /* slightly lighter dark green */
+    --surface-2:   #044235; /* slightly lighter dark green */
+    --beige:       #f6e7d8; /* light beige */
+
+    /* Text */
     --dark-green:  #022c22;
-    --light:       #f5e6d3;
+    --muted:       rgba(246, 231, 216, 0.82); /* readable body text on dark */
+    --white:       #ffffff;
+    --light:       #f8f1e9;
+
+    /* Accents */
+    --red:         #680202; /* soft red/pink */
+    --red-b:       #7e0000; /* stronger red */
+    --green:       #003703;
+    --green-b:     #004116; /* brighter green accent */
   
     --nav-h: 70px;
   
@@ -41,7 +45,7 @@
   /* ── base ── */
   .about-page {
     background: var(--bg);
-    color: var(--dark-green);
+    color: var(--beige);
     font-family: var(--font);
     line-height: 1.6;
     margin: 0; padding: 0;
@@ -61,6 +65,7 @@
   /* ============================================================
      HERO
      ============================================================ */
+
   .about-hero {
     position: relative;
     padding-top: var(--nav-h);
@@ -100,6 +105,7 @@
     color: var(--red-b);
     margin-bottom: var(--sp-xl);
   }
+
   .hero-eyebrow::before {
     content: "";
     display: block; width: 20px; height: 1.5px;
@@ -112,7 +118,7 @@
     letter-spacing: -0.04em;
     line-height: 0.92;
     text-transform: uppercase;
-    color: var(--dark-green);
+    color: var(--beige);
     margin: 0 0 var(--sp-2xl);
   }
   .hero-title .accent {
@@ -125,19 +131,19 @@
   }
   
   .hero-description {
-    font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
     color: var(--muted);
-    line-height: 1.8;
-    font-weight: 400;
+    line-height: 1.85;
+    font-weight: 500;
     max-width: 400px;
     margin: 0 0 var(--sp-sm);
   }
-  .hero-description strong { color: var(--dark-green); font-weight: 600; }
+  .hero-description strong { color: var(--beige); font-weight: 700; }
   
   .hero-caption-line {
     margin-top: var(--sp-xl);
     padding-top: var(--sp-lg);
-    border-top: 1px solid rgba(2, 44, 34, 0.15);
+    border-top: 1px solid rgba(246, 231, 216, 0.18);
     font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.16em;
@@ -187,7 +193,7 @@
     font-size: clamp(8rem, 20vw, 18rem);
     font-weight: 900; line-height: 1;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(2, 44, 34, 0.06);
+    -webkit-text-stroke: 1px rgba(246, 231, 216, 0.08);
     letter-spacing: -0.05em;
     pointer-events: none; user-select: none;
   }
@@ -201,7 +207,7 @@
   .manifesto-quote {
     font-size: clamp(1.3rem, 2.8vw, 2.2rem);
     font-weight: 800; line-height: 1.3;
-    color: var(--dark-green); max-width: 740px;
+    color: var(--beige); max-width: 740px;
     letter-spacing: -0.02em;
     margin: 0 auto var(--sp-xl);
     position: relative; z-index: 1;
@@ -209,8 +215,8 @@
   .manifesto-quote em { font-style: normal; color: var(--red); }
   .manifesto-sub {
     align-self: flex-end; max-width: 320px; text-align: left;
-    font-size: 0.88rem; color: var(--muted);
-    font-weight: 400; line-height: 1.7;
+    font-size: 0.98rem; color: var(--muted);
+    font-weight: 500; line-height: 1.75;
     position: relative; z-index: 1;
     border-left: 3px solid var(--red);
     padding-left: var(--sp-lg);
@@ -228,6 +234,7 @@
   }
   .num-section--dark  { background: var(--surface); }
   .num-section--light { background: var(--bg); }
+  .num-section--02-with-image { background: var(--surface); }
   
   /* ── Section 03: red variant ── */
   .num-section--dark-red {
@@ -285,7 +292,7 @@
     letter-spacing: -0.035em;
     line-height: 0.98;
     text-transform: uppercase;
-    color: var(--dark-green);
+    color: var(--beige);
     margin: 0 0 var(--sp-md);
   }
   .section-heading .line-red { color: var(--red); }
@@ -301,7 +308,8 @@
   .section-tag {
     display: inline-block;
     padding: var(--sp-xs) var(--sp-md);
-    background: var(--dark-green);
+    background: rgba(246, 231, 216, 0.08);
+    border: 1px solid rgba(246, 231, 216, 0.18);
     color: var(--beige);
     font-size: 0.55rem; font-weight: 700;
     letter-spacing: 0.2em; text-transform: uppercase;
@@ -316,13 +324,13 @@
   }
   
   .section-body {
-    font-size: clamp(0.88rem, 1.1vw, 0.95rem);
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
     color: var(--muted);
-    line-height: 1.8; font-weight: 400;
+    line-height: 1.9; font-weight: 500;
     margin: 0 0 var(--sp-md);
     max-width: 580px;
   }
-  .section-body strong { color: var(--dark-green); font-weight: 600; }
+  .section-body strong { color: var(--beige); font-weight: 700; }
   
   /* Dark-red section: brighter muted text for readability */
   .num-section--dark-red .section-body {
@@ -440,8 +448,8 @@
   .focus-list ul { list-style:none; margin:0; padding:0; }
   .focus-list li {
     position:relative; padding-left: var(--sp-lg);
-    font-size: 0.88rem;
-    color: var(--muted); line-height: 1.9;
+    font-size: 1rem;
+    color: var(--muted); line-height: 1.95;
     transition: color var(--t) var(--ease), padding-left var(--t) var(--ease);
   }
   .focus-list li:hover { color:var(--beige); padding-left:calc(var(--sp-lg) + 4px); }
@@ -466,14 +474,14 @@
   
   .section-callout {
     margin-top:var(--sp-xl);
-    background:rgba(245,230,211,0.03);
+    background: rgba(246, 231, 216, 0.06);
     border-left:3px solid var(--red);
     padding:var(--sp-md) var(--sp-xl);
   }
   .section-callout p {
     margin:0;
     font-size: 0.9rem;
-    color: var(--dark-green);
+    color: var(--beige);
     line-height: 1.65;
   }
   .section-callout strong { font-weight: 700; }
@@ -626,9 +634,9 @@
   }
   
   .exposure-intro-body {
-    font-size: clamp(0.88rem, 1.1vw, 0.98rem);
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
     color: var(--beige); line-height: 1.75;
-    font-weight: 400; margin: 0 0 var(--sp-xl);
+    font-weight: 500; margin: 0 0 var(--sp-xl);
   }
   .exposure-intro-body strong { font-weight:700; }
   
@@ -640,7 +648,7 @@
     display:flex; align-items:flex-start; gap:var(--sp-sm);
     padding: var(--sp-sm) 0;
     border-bottom:1px solid rgba(245,230,211,0.06);
-    font-size: 0.88rem;
+    font-size: 1rem;
     color:var(--muted);
     transition: color var(--t) var(--ease), padding-left var(--t) var(--ease);
   }
@@ -659,15 +667,15 @@
   }
   
   .exposure-story-body p {
-    font-size: 0.88rem;
+    font-size: 1rem;
     color:var(--muted); line-height:1.8;
-    font-weight:400; margin:0 0 var(--sp-sm);
+    font-weight:500; margin:0 0 var(--sp-sm);
   }
   .exposure-story-body strong { color:var(--beige); font-weight:600; }
   .exposure-story-body ul { list-style:none; margin:var(--sp-xs) 0 var(--sp-lg); padding:0; }
   .exposure-story-body li {
     position:relative; padding-left:var(--sp-lg);
-    font-size: 0.88rem; color:var(--muted); line-height:2;
+    font-size: 1rem; color:var(--muted); line-height:2.05;
   }
   .exposure-story-body li::before {
     content:""; position:absolute; left:0; top:0.84em;
@@ -740,7 +748,7 @@
   .cta-button {
     display:inline-flex; align-items:center; gap:var(--sp-sm);
     padding:0.8rem 1.8rem;
-    background:var(--beige); color:var(--bg);
+    background:var(--beige); color:var(--dark-green);
     font-weight:800; font-size:0.75rem;
     text-decoration:none; text-transform:uppercase; letter-spacing:0.1em;
     border:2px solid var(--beige);
@@ -750,6 +758,7 @@
   }
   .cta-button:hover {
     background:var(--white);
+    color: var(--dark-green);
     transform:translate(-2px,-2px);
     box-shadow:5px 5px 0 rgba(0,0,0,0.45);
   }

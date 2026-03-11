@@ -12,6 +12,10 @@ const menuData: MenuItem[] = [
     path: '/',
   },
   {
+    label: 'Orientation',
+    path: '/orientation',
+  },
+  {
     label: 'Commissions',
     submenu: [
       {
@@ -33,10 +37,6 @@ const menuData: MenuItem[] = [
         path: '/commissions#sd',
       },
     ],
-  },
-  {
-    label: 'Orientation',
-    path: '/orientation',
   },
   {
     label: 'DecryptMundi',

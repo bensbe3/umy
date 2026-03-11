@@ -364,7 +364,7 @@ export function ContactPage() {
           </div>
           {mode === 'application' ? (
             <p>
-              This is the official application form to join the United Moroccan Youth (UMY). Applications are open to young people aged 16 to 30.
+              This is the official application form to join United Moroccan Youth (UMY). Applications are open to young people aged 16 to 30.
             </p>
           ) : (
             <p>
@@ -398,7 +398,7 @@ export function ContactPage() {
                     <div className="contact-info-icon"><MapPin /></div>
                     <div className="contact-info-content">
                       <div className="contact-info-label">Location</div>
-                      <p className="contact-info-value">Rabat</p>
+                      <p className="contact-info-value">Morocco</p>
                     </div>
                   </li>
                 </ul>
