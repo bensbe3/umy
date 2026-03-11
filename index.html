@@ -1,150 +1,106 @@
 <!doctype html>
 <html lang="fr" dir="ltr">
-<head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Primary -->
+    <title>United Moroccan Youth (UMY) | Engagement civique & leadership jeunesse au Maroc</title>
+    <meta
+      name="description"
+      content="United Moroccan Youth (UMY) est une organisation marocaine dirigée par des jeunes : engagement civique, leadership, orientation académique, opportunités internationales, bourses et initiatives sociales."
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="United Moroccan Youth" />
+    <link rel="canonical" href="https://unitedmoroccanyouth.org" />
 
-<!-- Title -->
-<title>United Moroccan Youth (UMY) | Civic Engagement Morocco</title>
+    <!-- Language / hreflang (single canonical language versions for now) -->
+    <link rel="alternate" href="https://unitedmoroccanyouth.org" hreflang="fr" />
+    <link rel="alternate" href="https://unitedmoroccanyouth.org" hreflang="en" />
+    <link rel="alternate" href="https://unitedmoroccanyouth.org" hreflang="ar" />
+    <link rel="alternate" href="https://unitedmoroccanyouth.org" hreflang="x-default" />
 
-<!-- SEO Description -->
-<meta name="description" content="United Moroccan Youth (UMY) is a Moroccan youth organization empowering young people through civic engagement, leadership programs, academic orientation, international opportunities, scholarships guidance, and social initiatives shaping the future of Morocco." />
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="/images/logoUmy.png" />
+    <link rel="apple-touch-icon" href="/images/logoUmy.png" />
+    <meta name="theme-color" content="#022c22" />
 
-<!-- Keywords -->
-<meta name="keywords" content="
-United Moroccan Youth,
-UMY Morocco,
-Moroccan youth organization,
-youth association Morocco,
-youth leadership Morocco,
-civic engagement Morocco,
-student opportunities Morocco,
-post bac orientation Morocco,
-scholarships Morocco students,
-study abroad Morocco,
-Moroccan youth programs,
-youth civic leadership,
-international relations Morocco youth,
-Moroccan politics education,
-Model United Nations Morocco,
-youth parliament Morocco,
-political simulation Morocco,
-youth development Morocco,
-youth empowerment Morocco,
-Moroccan NGOs youth,
-student leadership Morocco,
-young leaders Morocco,
-future leaders Morocco,
-UMY programs,
-UMY civic leadership,
-UMY orientation opportunities
-" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://unitedmoroccanyouth.org" />
+    <meta property="og:title" content="United Moroccan Youth (UMY)" />
+    <meta
+      property="og:description"
+      content="Engagement civique, leadership, orientation académique et opportunités pour la jeunesse marocaine."
+    />
+    <meta property="og:image" content="https://unitedmoroccanyouth.org/images/logoUmy.png" />
+    <meta property="og:image:alt" content="United Moroccan Youth (UMY) — logo" />
+    <meta property="og:site_name" content="United Moroccan Youth" />
+    <meta property="og:locale" content="fr_MA" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="ar_MA" />
 
-<meta name="robots" content="index, follow" />
-<meta name="author" content="United Moroccan Youth" />
-<link rel="canonical" href="https://unitedmoroccanyouth.org" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="United Moroccan Youth (UMY)" />
+    <meta
+      name="twitter:description"
+      content="Engagement civique, leadership et opportunités pour la jeunesse marocaine."
+    />
+    <meta name="twitter:image" content="https://unitedmoroccanyouth.org/images/logoUmy.png" />
+    <meta name="twitter:image:alt" content="United Moroccan Youth (UMY) — logo" />
 
-<!-- Favicon -->
-<link rel="icon" type="image/png" href="/images/logoUmy.png" />
-<link rel="apple-touch-icon" href="/images/logoUmy.png" />
+    <!-- Optional (kept short; avoid keyword stuffing) -->
+    <meta
+      name="keywords"
+      content="United Moroccan Youth, UMY, jeunesse marocaine, engagement civique, leadership, orientation académique, bourses, opportunités internationales"
+    />
 
-<meta name="theme-color" content="#022c22" />
+    <!-- Structured data: Organization + WebSite (page-level JSON-LD is injected by React per route) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": ["Organization", "NGO"],
+        "name": "United Moroccan Youth",
+        "alternateName": "UMY",
+        "url": "https://unitedmoroccanyouth.org",
+        "description": "Organisation marocaine dirigée par des jeunes : engagement civique, leadership, orientation académique, opportunités internationales et initiatives sociales.",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://unitedmoroccanyouth.org/images/logoUmy.png"
+        },
+        "image": "https://unitedmoroccanyouth.org/images/logoUmy.png",
+        "foundingDate": "2024-01-01",
+        "areaServed": { "@type": "Country", "name": "Morocco" },
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "email": "contact@unitedmoroccanyouth.org",
+            "contactType": "General inquiries",
+            "availableLanguage": ["fr", "en", "ar"]
+          }
+        ]
+      }
+    </script>
 
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://unitedmoroccanyouth.org">
-<meta property="og:title" content="United Moroccan Youth (UMY)">
-<meta property="og:description" content="Empowering Moroccan youth through civic engagement, leadership, education guidance, and international opportunities.">
-<meta property="og:image" content="https://unitedmoroccanyouth.org/images/logoUmy.png">
-<meta property="og:site_name" content="United Moroccan Youth">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "United Moroccan Youth",
+        "alternateName": "UMY",
+        "url": "https://unitedmoroccanyouth.org"
+      }
+    </script>
 
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="United Moroccan Youth (UMY)">
-<meta name="twitter:description" content="Youth leadership, civic engagement, and opportunities for Moroccan youth.">
-<meta name="twitter:image" content="https://unitedmoroccanyouth.org/images/logoUmy.png">
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
 
-<!-- Organization Schema -->
-<script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@type": "Organization",
- "name": "United Moroccan Youth",
- "alternateName": "UMY",
- "url": "https://unitedmoroccanyouth.org",
- "logo": "https://unitedmoroccanyouth.org/images/logoUmy.png",
- "description": "Youth-led Moroccan organization empowering young people through civic engagement, leadership programs, education guidance and social initiatives.",
- "foundingDate": "2024",
- "areaServed": "Morocco",
- "contactPoint": {
-   "@type": "ContactPoint",
-   "email": "contact@unitedmoroccanyouth.org",
-   "contactType": "General Inquiries"
- }
-}
-</script>
-
-<!-- Website Schema (helps sitelinks) -->
-<script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@type": "WebSite",
- "name": "United Moroccan Youth",
- "url": "https://unitedmoroccanyouth.org",
- "potentialAction": {
-   "@type": "SearchAction",
-   "target": "https://unitedmoroccanyouth.org/search?q={search_term_string}",
-   "query-input": "required name=search_term_string"
- }
-}
-</script>
-
-<!-- Sitelinks Schema -->
-<script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@type": "ItemList",
- "itemListElement": [
-  {
-   "@type": "SiteNavigationElement",
-   "position": 1,
-   "name": "Home",
-   "url": "https://unitedmoroccanyouth.org/"
-  },
-  {
-   "@type": "SiteNavigationElement",
-   "position": 2,
-   "name": "Civic Leadership",
-   "url": "https://unitedmoroccanyouth.org/commissions"
-  },
-  {
-   "@type": "SiteNavigationElement",
-   "position": 3,
-   "name": "Orientation & Opportunities",
-   "url": "https://unitedmoroccanyouth.org/orientation"
-  },
-  {
-   "@type": "SiteNavigationElement",
-   "position": 4,
-   "name": "Contact",
-   "url": "https://unitedmoroccanyouth.org/contact"
-  }
- ]
-}
-</script>
-
-<!-- Performance -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-</head>
-
-<body>
-
-<div id="root"></div>
-
-<script type="module" src="/src/main.tsx"></script>
-
-</body>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
