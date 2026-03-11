@@ -74,6 +74,7 @@ export interface ContactSubmission {
   skills?: string[];
   additional_info?: string;
   referral_source?: string;
+  type?: 'application' | 'contact';
   status: 'new' | 'read' | 'replied' | 'archived' | 'accepted' | 'interesting' | 'weak_candidate';
   created_at: string;
   updated_at: string;

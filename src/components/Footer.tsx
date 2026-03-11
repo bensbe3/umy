@@ -92,7 +92,7 @@ export function Footer() {
                   <Mail className="footer-contact-icon" />
                   <div>
                     <div className="footer-contact-label">Email</div>
-                    <a href="mailto:info@unitedmoroccan.org" className="footer-contact-link">
+                    <a href="mailto:contact@unitedmoroccanyouth.org" className="footer-contact-link">
                       contact@unitedmoroccanyouth.org
                     </a>
                   </div>

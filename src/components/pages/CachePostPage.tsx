@@ -793,21 +793,37 @@ function ContactSubmissionsView({
   onSelectContact: (contact: ContactSubmission | null) => void;
   onUpdateStatus: (id: string, status: ContactSubmission['status']) => Promise<void>;
 }) {
+  const [typeFilter, setTypeFilter] = useState<'all' | 'application' | 'contact'>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
+  const getType = (submission: ContactSubmission): 'application' | 'contact' => {
+    const explicit = (submission as any).type;
+    if (explicit === 'application' || explicit === 'contact') {
+      return explicit;
+    }
+    return submission.commission_interest || submission.position_applying || submission.age
+      ? 'application'
+      : 'contact';
+  };
+
+  const typeFilteredSubmissions =
+    typeFilter === 'all'
+      ? submissions
+      : submissions.filter((s) => getType(s) === typeFilter);
+
   const statusTabs = [
-    { id: 'all', label: 'All', count: submissions.length },
-    { id: 'pending', label: 'Pending', count: submissions.filter(s => ['new', 'read'].includes(s.status)).length },
-    { id: 'accepted', label: 'Accepted', count: submissions.filter(s => s.status === 'accepted').length },
-    { id: 'interesting', label: 'Interesting', count: submissions.filter(s => s.status === 'interesting').length },
-    { id: 'weak_candidate', label: 'Weak', count: submissions.filter(s => s.status === 'weak_candidate').length },
+    { id: 'all', label: 'All', count: typeFilteredSubmissions.length },
+    { id: 'pending', label: 'Pending', count: typeFilteredSubmissions.filter(s => ['new', 'read'].includes(s.status)).length },
+    { id: 'accepted', label: 'Accepted', count: typeFilteredSubmissions.filter(s => s.status === 'accepted').length },
+    { id: 'interesting', label: 'Interesting', count: typeFilteredSubmissions.filter(s => s.status === 'interesting').length },
+    { id: 'weak_candidate', label: 'Weak', count: typeFilteredSubmissions.filter(s => s.status === 'weak_candidate').length },
   ];
 
   const filteredSubmissions = statusFilter === 'all'
-    ? submissions
+    ? typeFilteredSubmissions
     : statusFilter === 'pending'
-      ? submissions.filter(s => ['new', 'read'].includes(s.status))
-      : submissions.filter(s => s.status === statusFilter);
+      ? typeFilteredSubmissions.filter(s => ['new', 'read'].includes(s.status))
+      : typeFilteredSubmissions.filter(s => s.status === statusFilter);
 
   const getStatusIcon = (status: ContactSubmission['status']) => {
     switch (status) {
@@ -861,6 +877,27 @@ function ContactSubmissionsView({
 
   return (
     <div className="contact-submissions-container">
+      <div className="contact-type-tabs">
+        <button
+          className={`contact-status-tab ${typeFilter === 'all' ? 'active' : ''}`}
+          onClick={() => setTypeFilter('all')}
+        >
+          All ({submissions.length})
+        </button>
+        <button
+          className={`contact-status-tab ${typeFilter === 'application' ? 'active' : ''}`}
+          onClick={() => setTypeFilter('application')}
+        >
+          Applications ({submissions.filter(s => getType(s) === 'application').length})
+        </button>
+        <button
+          className={`contact-status-tab ${typeFilter === 'contact' ? 'active' : ''}`}
+          onClick={() => setTypeFilter('contact')}
+        >
+          Contacts ({submissions.filter(s => getType(s) === 'contact').length})
+        </button>
+      </div>
+
       <div className="contact-status-tabs">
         {statusTabs.map((tab) => (
           <button
@@ -905,7 +942,12 @@ function ContactSubmissionsView({
                 <td className="contact-table-email">
                   <a href={`mailto:${submission.email}`}>{submission.email}</a>
                 </td>
-                <td className="contact-table-subject">{submission.commission_interest || submission.subject || 'UMY Application'}</td>
+                <td className="contact-table-subject">
+                  <span className={`contact-type-pill contact-type-pill--${getType(submission)}`}>
+                    {getType(submission) === 'application' ? 'Application' : 'Contact'}
+                  </span>
+                  {submission.commission_interest || submission.subject || 'UMY Application'}
+                </td>
                 <td>
                   <span
                     className="contact-status-badge contact-table-status"

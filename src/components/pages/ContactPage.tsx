@@ -40,6 +40,14 @@ interface FormData {
   referral_source: string;
 }
 
+interface SimpleContactFormData {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
 const STEPS = [
   { id: 1, title: 'Personal Info', required: true },
   { id: 2, title: 'Current Situation', required: true },
@@ -50,6 +58,8 @@ const STEPS = [
 ];
 
 export function ContactPage() {
+  const [mode, setMode] = useState<'application' | 'contact'>('application');
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -74,6 +84,16 @@ export function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+
+  const [contactForm, setContactForm] = useState<SimpleContactFormData>({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+  });
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [isContactSubmitting, setIsContactSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +143,7 @@ export function ContactPage() {
         skills: formData.skills.length > 0 ? formData.skills : null,
         additional_info: formData.additional_info ? sanitizeText(formData.additional_info) : null,
         referral_source: formData.referral_source ? sanitizeText(formData.referral_source) : null,
+        type: 'application' as const,
         status: 'new' as const,
       };
 
@@ -166,6 +187,88 @@ export function ContactPage() {
       toast.error(error.message || 'Failed to submit application. Please try again.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleContactChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setContactForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const clientId = localStorage.getItem('clientId') || `client_${Date.now()}`;
+    localStorage.setItem('clientId', clientId);
+
+    if (!checkRateLimit(clientId, 5, 60000)) {
+      toast.error('Too many submissions. Please wait a minute before trying again.');
+      return;
+    }
+
+    const nameValidation = validateInput(contactForm.name, 'text');
+    const emailValidation = validateInput(contactForm.email, 'email');
+
+    if (!nameValidation.valid || !emailValidation.valid) {
+      toast.error('Please check your input. Some fields contain invalid characters.');
+      return;
+    }
+
+    if (!contactForm.subject.trim() || !contactForm.message.trim()) {
+      toast.error('Please fill in subject and message.');
+      return;
+    }
+
+    setIsContactSubmitting(true);
+
+    try {
+      if (!supabase) {
+        toast.error('Database not configured. Please set up Supabase.');
+        setIsContactSubmitting(false);
+        return;
+      }
+
+      const sanitizedData = {
+        name: nameValidation.sanitized,
+        email: emailValidation.sanitized,
+        phone: sanitizeText(contactForm.phone),
+        subject: sanitizeText(contactForm.subject),
+        message: sanitizeText(contactForm.message),
+        type: 'contact' as const,
+        status: 'new' as const,
+      };
+
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([sanitizedData])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast.success('Message sent successfully! We\'ll get back to you soon.');
+      setContactSubmitted(true);
+
+      setTimeout(() => {
+        setContactSubmitted(false);
+        setContactForm({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+        });
+      }, 3000);
+    } catch (error: any) {
+      console.error('Error submitting contact form:', error);
+      toast.error(error.message || 'Failed to send message. Please try again.');
+    } finally {
+      setIsContactSubmitting(false);
     }
   };
 
@@ -240,10 +343,34 @@ export function ContactPage() {
     <div className="contact-page">
       <section className="contact-header-section">
         <div className="container">
-          <h1>UMY Membership Application</h1>
-          <p>
-            This is the official application form to join the United Moroccan Youth (UMY). Applications are open to young people aged 16 to 30.
-          </p>
+          <div className="contact-header-stack">
+            <h1>{mode === 'application' ? 'UMY Membership Application' : 'Contact UMY'}</h1>
+            <div className="contact-mode-toggle">
+              <button
+                type="button"
+                className={mode === 'application' ? 'active' : ''}
+                onClick={() => setMode('application')}
+              >
+                Membership Application
+              </button>
+              <button
+                type="button"
+                className={mode === 'contact' ? 'active' : ''}
+                onClick={() => setMode('contact')}
+              >
+                General Contact
+              </button>
+            </div>
+          </div>
+          {mode === 'application' ? (
+            <p>
+              This is the official application form to join the United Moroccan Youth (UMY). Applications are open to young people aged 16 to 30.
+            </p>
+          ) : (
+            <p>
+              Use this form for general questions, partnerships, or press inquiries. For joining UMY as a member, switch to the Membership Application tab.
+            </p>
+          )}
         </div>
       </section>
 
@@ -284,199 +411,287 @@ export function ContactPage() {
 
             <div>
               <div className="contact-form-card">
-                <h3>UMY Application Form</h3>
+                <h3>{mode === 'application' ? 'UMY Application Form' : 'General Contact Form'}</h3>
 
-                {submitted ? (
-                  <div className="form-success">
-                    <div className="success-icon-wrapper"><Send /></div>
-                    <h4>Application Submitted!</h4>
-                    <p>Thank you for applying. We'll review your application and get back to you soon.</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="step-indicator">
-                      {STEPS.map((step, index) => (
-                        <div key={step.id} className="step-indicator-wrapper">
-                          <div
-                            className={`step-indicator-item ${currentStep === step.id ? 'active' : ''} ${completedSteps.includes(step.id) ? 'completed' : ''} ${currentStep > step.id ? 'passed' : ''}`}
-                            onClick={() => {
-                              if (completedSteps.includes(step.id) || currentStep > step.id) {
-                                setCurrentStep(step.id);
-                              }
-                            }}
-                          >
-                            <div className="step-number">
-                              {completedSteps.includes(step.id) ? <Check size={14} /> : step.id}
-                            </div>
-                            <div className="step-title">{step.title}</div>
-                            {!step.required && <div className="step-optional">Optional</div>}
-                          </div>
-                          {index < STEPS.length - 1 && (
-                            <div className={`step-connector ${currentStep > step.id ? 'completed' : ''}`} />
-                          )}
-                        </div>
-                      ))}
+                {mode === 'application' ? (
+                  submitted ? (
+                    <div className="form-success">
+                      <div className="success-icon-wrapper"><Send /></div>
+                      <h4>Application Submitted!</h4>
+                      <p>Thank you for applying. We'll review your application and get back to you soon.</p>
                     </div>
-
-                    <form onSubmit={handleSubmit} className="contact-form">
-                      {/* Step 1: Personal Info */}
-                      <div className={`form-step ${currentStep === 1 ? 'active' : ''}`}>
-                        <div className="form-step-content">
-                          <div className="form-group">
-                            <label htmlFor="name">Full Name *</label>
-                            <input type="text" id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Your full name" />
+                  ) : (
+                    <>
+                      <div className="step-indicator">
+                        {STEPS.map((step, index) => (
+                          <div key={step.id} className="step-indicator-wrapper">
+                            <div
+                              className={`step-indicator-item ${currentStep === step.id ? 'active' : ''} ${completedSteps.includes(step.id) ? 'completed' : ''} ${currentStep > step.id ? 'passed' : ''}`}
+                              onClick={() => {
+                                if (completedSteps.includes(step.id) || currentStep > step.id) {
+                                  setCurrentStep(step.id);
+                                }
+                              }}
+                            >
+                              <div className="step-number">
+                                {completedSteps.includes(step.id) ? <Check size={14} /> : step.id}
+                              </div>
+                              <div className="step-title">{step.title}</div>
+                              {!step.required && <div className="step-optional">Optional</div>}
+                            </div>
+                            {index < STEPS.length - 1 && (
+                              <div className={`step-connector ${currentStep > step.id ? 'completed' : ''}`} />
+                            )}
                           </div>
-                          <div className="form-group">
-                            <label htmlFor="age">Age  *</label>
-                            <input type="number" id="age" name="age" required min={16} max={30} value={formData.age} onChange={handleChange} placeholder="16-30" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="email">Email *</label>
-                            <input type="email" id="email" name="email" required value={formData.email} onChange={handleChange} placeholder="your.email@example.com" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="phone">Phone *</label>
-                            <input type="tel" id="phone" name="phone" required value={formData.phone} onChange={handleChange} placeholder="+212 6XX-XXXXXX" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="cin_number">CIN *</label>
-                            <input type="text" id="cin_number" name="cin_number" required value={formData.cin_number} onChange={handleChange} placeholder="National ID number" />
-                          </div>
-                        </div>
+                        ))}
                       </div>
 
-                      {/* Step 2: Current Situation */}
-                      <div className={`form-step ${currentStep === 2 ? 'active' : ''}`}>
-                        <div className="form-step-content">
-                          <div className="form-group">
-                            <label htmlFor="current_occupation">Current Occupation / الوضع الحالي *</label>
-                            <input type="text" id="current_occupation" name="current_occupation" required value={formData.current_occupation} onChange={handleChange} placeholder="School year / work..." />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="city">City of residence / مدينة الإقامة *</label>
-                            <input type="text" id="city" name="city" required value={formData.city} onChange={handleChange} placeholder="Your city" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="other_organization">Other organization? / منظمة أخرى؟</label>
-                            <input type="text" id="other_organization" name="other_organization" value={formData.other_organization} onChange={handleChange} placeholder="If yes, which one?" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="political_party">Political party member? / عضو حزب سياسي؟</label>
-                            <input type="text" id="political_party" name="political_party" value={formData.political_party} onChange={handleChange} placeholder="If yes, which one?" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Step 3: Commission & Position */}
-                      <div className={`form-step ${currentStep === 3 ? 'active' : ''}`}>
-                        <div className="form-step-content">
-                          <div className="form-group">
-                            <label htmlFor="commission_interest">Commission interest *</label>
-                            <select id="commission_interest" name="commission_interest" required value={formData.commission_interest} onChange={handleChange}>
-                              <option value="">Select...</option>
-                              <option value="mp">Moroccan Politics Commission </option>
-                              <option value="ir">International Relations Commission </option>
-                              <option value="sd">Social Development Commission </option>
-                            </select>
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="commission_motivation">Commission motivation *</label>
-                            <textarea id="commission_motivation" name="commission_motivation" required value={formData.commission_motivation} onChange={handleChange} rows={4} placeholder="Choose one commission and write a short motivation" />
-                          </div>
-                          <div className="form-group">
-                            <label htmlFor="position_applying">Position *</label>
-                            <select id="position_applying" name="position_applying" required value={formData.position_applying} onChange={handleChange}>
-                              <option value="membership">Membership </option>
-                              <option value="leadership">Leadership </option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Step 4: Commitment */}
-                      <div className={`form-step ${currentStep === 4 ? 'active' : ''}`}>
-                        <div className="form-step-content">
-                          <div className="form-group form-group-checkbox">
-                            <label>
-                              <input
-                                type="checkbox"
-                                name="active_membership_acknowledged"
-                                checked={formData.active_membership_acknowledged}
-                                onChange={handleChange}
-                              />
-                              I recognize that active membership within UMY requires serious work, participation, and help organizing events. *
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Step 5: Experience & Skills */}
-                      <div className={`form-step ${currentStep === 5 ? 'active' : ''}`}>
-                        <div className="form-step-content">
-                          <div className="form-group">
-                            <label htmlFor="previous_experiences">Previous experiences </label>
-                            <textarea id="previous_experiences" name="previous_experiences" value={formData.previous_experiences} onChange={handleChange} rows={4} placeholder="Share any previous experiences" />
-                          </div>
-                          <div className="form-group">
-                            <label>Skills </label>
-                            <div className="skills-checkboxes">
-                              {SKILL_OPTIONS.map((skill) => (
-                                <label key={skill.id} className="skill-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={formData.skills.includes(skill.id)}
-                                    onChange={() => handleSkillToggle(skill.id)}
-                                  />
-                                  {skill.label}
-                                </label>
-                              ))}
+                      <form onSubmit={handleSubmit} className="contact-form">
+                        {/* Step 1: Personal Info */}
+                        <div className={`form-step ${currentStep === 1 ? 'active' : ''}`}>
+                          <div className="form-step-content">
+                            <div className="form-group">
+                              <label htmlFor="name">Full Name *</label>
+                              <input type="text" id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Your full name" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="age">Age  *</label>
+                              <input type="number" id="age" name="age" required min={16} max={30} value={formData.age} onChange={handleChange} placeholder="16-30" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="email">Email *</label>
+                              <input type="email" id="email" name="email" required value={formData.email} onChange={handleChange} placeholder="your.email@example.com" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="phone">Phone *</label>
+                              <input type="tel" id="phone" name="phone" required value={formData.phone} onChange={handleChange} placeholder="+212 6XX-XXXXXX" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="cin_number">CIN *</label>
+                              <input type="text" id="cin_number" name="cin_number" required value={formData.cin_number} onChange={handleChange} placeholder="National ID number" />
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Step 6: Additional */}
-                      <div className={`form-step ${currentStep === 6 ? 'active' : ''}`}>
+                        {/* Step 2: Current Situation */}
+                        <div className={`form-step ${currentStep === 2 ? 'active' : ''}`}>
+                          <div className="form-step-content">
+                            <div className="form-group">
+                              <label htmlFor="current_occupation">Current Occupation / الوضع الحالي *</label>
+                              <input type="text" id="current_occupation" name="current_occupation" required value={formData.current_occupation} onChange={handleChange} placeholder="School year / work..." />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="city">City of residence / مدينة الإقامة *</label>
+                              <input type="text" id="city" name="city" required value={formData.city} onChange={handleChange} placeholder="Your city" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="other_organization">Other organization? / منظمة أخرى؟</label>
+                              <input type="text" id="other_organization" name="other_organization" value={formData.other_organization} onChange={handleChange} placeholder="If yes, which one?" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="political_party">Political party member? / عضو حزب سياسي؟</label>
+                              <input type="text" id="political_party" name="political_party" value={formData.political_party} onChange={handleChange} placeholder="If yes, which one?" />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Step 3: Commission & Position */}
+                        <div className={`form-step ${currentStep === 3 ? 'active' : ''}`}>
+                          <div className="form-step-content">
+                            <div className="form-group">
+                              <label htmlFor="commission_interest">Commission interest *</label>
+                              <select id="commission_interest" name="commission_interest" required value={formData.commission_interest} onChange={handleChange}>
+                                <option value="">Select...</option>
+                                <option value="mp">Moroccan Politics Commission </option>
+                                <option value="ir">International Relations Commission </option>
+                                <option value="sd">Social Development Commission </option>
+                              </select>
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="commission_motivation">Commission motivation *</label>
+                              <textarea id="commission_motivation" name="commission_motivation" required value={formData.commission_motivation} onChange={handleChange} rows={4} placeholder="Choose one commission and write a short motivation" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="position_applying">Position *</label>
+                              <select id="position_applying" name="position_applying" required value={formData.position_applying} onChange={handleChange}>
+                                <option value="membership">Membership </option>
+                                <option value="leadership">Leadership </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Step 4: Commitment */}
+                        <div className={`form-step ${currentStep === 4 ? 'active' : ''}`}>
+                          <div className="form-step-content">
+                            <div className="form-group form-group-checkbox">
+                              <label>
+                                <input
+                                  type="checkbox"
+                                  name="active_membership_acknowledged"
+                                  checked={formData.active_membership_acknowledged}
+                                  onChange={handleChange}
+                                />
+                                I recognize that active membership within UMY requires serious work, participation, and help organizing events. *
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Step 5: Experience & Skills */}
+                        <div className={`form-step ${currentStep === 5 ? 'active' : ''}`}>
+                          <div className="form-step-content">
+                            <div className="form-group">
+                              <label htmlFor="previous_experiences">Previous experiences </label>
+                              <textarea id="previous_experiences" name="previous_experiences" value={formData.previous_experiences} onChange={handleChange} rows={4} placeholder="Share any previous experiences" />
+                            </div>
+                            <div className="form-group">
+                              <label>Skills </label>
+                              <div className="skills-checkboxes">
+                                {SKILL_OPTIONS.map((skill) => (
+                                  <label key={skill.id} className="skill-checkbox">
+                                    <input
+                                      type="checkbox"
+                                      checked={formData.skills.includes(skill.id)}
+                                      onChange={() => handleSkillToggle(skill.id)}
+                                    />
+                                    {skill.label}
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Step 6: Additional */}
+                        <div className={`form-step ${currentStep === 6 ? 'active' : ''}`}>
+                          <div className="form-step-content">
+                            <div className="form-group">
+                              <label htmlFor="additional_info">Anything else? </label>
+                              <textarea id="additional_info" name="additional_info" value={formData.additional_info} onChange={handleChange} rows={3} placeholder="Anything else you want us to know" />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="referral_source">Where did you hear about this? *</label>
+                              <select id="referral_source" name="referral_source" required value={formData.referral_source} onChange={handleChange}>
+                                <option value="">Select...</option>
+                                {REFERRAL_OPTIONS.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="form-navigation">
+                          {currentStep > 1 && (
+                            <button type="button" onClick={handlePrevious} className="form-nav-button prev">
+                              <ChevronLeft /> Previous
+                            </button>
+                          )}
+                          <div className="form-nav-right">
+                            {currentStepInfo && !currentStepInfo.required && !isLastStep && (
+                              <button type="button" onClick={handleSkip} className="form-skip-button">Skip</button>
+                            )}
+                            {!isLastStep ? (
+                              <button type="button" onClick={handleNext} className="form-nav-button next" disabled={!canProceed}>
+                                Next <ChevronRight />
+                              </button>
+                            ) : (
+                              <button type="submit" className="form-submit-button" disabled={!canProceed || isSubmitting}>
+                                {isSubmitting ? <>Sending...</> : <><Send /> Submit Application</>}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </form>
+                    </>
+                  )
+                ) : (
+                  contactSubmitted ? (
+                    <div className="form-success">
+                      <div className="success-icon-wrapper"><Send /></div>
+                      <h4>Message Sent!</h4>
+                      <p>Thank you for reaching out. We'll get back to you soon.</p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleContactSubmit} className="contact-form contact-form--simple">
+                      <div className="form-step active">
                         <div className="form-step-content">
                           <div className="form-group">
-                            <label htmlFor="additional_info">Anything else? </label>
-                            <textarea id="additional_info" name="additional_info" value={formData.additional_info} onChange={handleChange} rows={3} placeholder="Anything else you want us to know" />
+                            <label htmlFor="contact_name">Full Name *</label>
+                            <input
+                              type="text"
+                              id="contact_name"
+                              name="name"
+                              required
+                              value={contactForm.name}
+                              onChange={handleContactChange}
+                              placeholder="Your full name"
+                            />
                           </div>
                           <div className="form-group">
-                            <label htmlFor="referral_source">Where did you hear about this? *</label>
-                            <select id="referral_source" name="referral_source" required value={formData.referral_source} onChange={handleChange}>
-                              <option value="">Select...</option>
-                              {REFERRAL_OPTIONS.map((opt) => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                              ))}
-                            </select>
+                            <label htmlFor="contact_email">Email *</label>
+                            <input
+                              type="email"
+                              id="contact_email"
+                              name="email"
+                              required
+                              value={contactForm.email}
+                              onChange={handleContactChange}
+                              placeholder="your.email@example.com"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="contact_phone">Phone</label>
+                            <input
+                              type="tel"
+                              id="contact_phone"
+                              name="phone"
+                              value={contactForm.phone}
+                              onChange={handleContactChange}
+                              placeholder="+212 6XX-XXXXXX"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="contact_subject">Subject *</label>
+                            <input
+                              type="text"
+                              id="contact_subject"
+                              name="subject"
+                              required
+                              value={contactForm.subject}
+                              onChange={handleContactChange}
+                              placeholder="How can we help?"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label htmlFor="contact_message">Message *</label>
+                            <textarea
+                              id="contact_message"
+                              name="message"
+                              required
+                              rows={4}
+                              value={contactForm.message}
+                              onChange={handleContactChange}
+                              placeholder="Write your message here..."
+                            />
                           </div>
                         </div>
                       </div>
 
                       <div className="form-navigation">
-                        {currentStep > 1 && (
-                          <button type="button" onClick={handlePrevious} className="form-nav-button prev">
-                            <ChevronLeft /> Previous
-                          </button>
-                        )}
                         <div className="form-nav-right">
-                          {currentStepInfo && !currentStepInfo.required && !isLastStep && (
-                            <button type="button" onClick={handleSkip} className="form-skip-button">Skip</button>
-                          )}
-                          {!isLastStep ? (
-                            <button type="button" onClick={handleNext} className="form-nav-button next" disabled={!canProceed}>
-                              Next <ChevronRight />
-                            </button>
-                          ) : (
-                            <button type="submit" className="form-submit-button" disabled={!canProceed || isSubmitting}>
-                              {isSubmitting ? <>Sending...</> : <><Send /> Submit Application</>}
-                            </button>
-                          )}
+                          <button
+                            type="submit"
+                            className="form-submit-button"
+                            disabled={isContactSubmitting}
+                          >
+                            {isContactSubmitting ? <>Sending...</> : <><Send /> Send Message</>}
+                          </button>
                         </div>
                       </div>
                     </form>
-                  </>
+                  )
                 )}
               </div>
             </div>
