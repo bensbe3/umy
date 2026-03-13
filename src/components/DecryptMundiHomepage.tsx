@@ -83,7 +83,7 @@ export function DecryptMundiHomepage() {
             <div className="section-label">Analysis & Commentary</div>
             <h2 className="section-title-center">DécryptMundi</h2>
             <p className="section-description">
-              In-depth analysis and expert commentary on politics, economy, and global affairs from Morocco's youth perspective.
+              In-depth analysis and commentary on politics, economy, and global affairs from Morocco's youth perspective.
             </p>
           </div>
           <Link to="/decryptmundi" className="btn-view-all">

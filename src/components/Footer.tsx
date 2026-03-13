@@ -101,7 +101,7 @@ export function Footer() {
                   <MapPin className="footer-contact-icon" />
                   <div>
                     <div className="footer-contact-label">Location</div>
-                    <span className="footer-contact-text">Rabat</span>
+                    <span className="footer-contact-text">Morocco</span>
                   </div>
                 </li>
               </ul>

@@ -93,7 +93,7 @@ export function HomepageNewsFeed() {
           <div className="section-label">Latest Updates</div>
           <h2 className="section-title-center">News &amp; Actualities</h2>
           <p className="section-description">
-            Stay updated with the latest news and updates.
+            Stay updated with the latest news and actualities.
           </p>
         </div>
 

@@ -120,7 +120,7 @@ export function DecryptMundiPage() {
           <div className="decryptmundi-hero-content">
             <h1 className="decryptmundi-hero-title">DécryptMundi</h1>
             <p className="decryptmundi-hero-subtitle">
-              In-depth analysis, investigative journalism, and expert commentary on politics, economy, society, and global affairs from Morocco's youth perspective.
+              In-depth analysis, and commentary on politics, economy, society, and global affairs from Morocco's youth perspective.
             </p>
           </div>
         </section>

@@ -1,9 +1,10 @@
-// HomePage.tsx - Updated with Pillars + DecryptMundi Sections
+// HomePage.tsx - Updated with Pillars + DecryptMundi + OrientationPillars Sections
 import { Link } from 'react-router-dom';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import {
   ArrowRight, Users, Target, Award, Globe, Landmark, Handshake,
-  Users2, Compass, Scale, BookOpen, GraduationCap
+  Users2, Compass, Scale, BookOpen, GraduationCap, ChevronDown,
+  Star, MapPin
 } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import PixelCard from '../PixelCard';
@@ -16,6 +17,184 @@ import './HomePage.css';
 import { timelineImages } from '../images';
 
 
+// ─────────────────────────────────────────────────────────
+//  OrientationPillars — accordion section
+// ─────────────────────────────────────────────────────────
+const orientationItems = [
+  {
+    id: 'op1',
+    color: 'green' as const,
+    num: '01',
+    icon: <GraduationCap size={22} />,
+    title: 'Academic Orientation & Test Preparation',
+    preview: 'We help students navigate one of the most important transitions of their lives: choosing what comes after high school.',
+    content: (
+      <>
+        <p className="op-body-text">
+          We help students navigate one of the most important transitions of their lives:
+          choosing what comes after high school. Through structured guidance and preparation
+          programs, we provide the clarity and tools students need to make informed decisions
+          about their academic future.
+        </p>
+        <p className="op-body-label">Our initiatives include</p>
+        <ul className="op-bullets">
+          <li>Academic orientation sessions and mentorship with students and professionals</li>
+          <li>Preparation support for international standardized tests</li>
+          <li>Guidance on university applications and global academic pathways</li>
+        </ul>
+        <p className="op-body-text">
+          By combining orientation, preparation and real insights from experienced mentors,
+          we help students approach their post-bac choices with confidence and direction.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'op2',
+    color: 'red' as const,
+    num: '02',
+    icon: <Globe size={22} />,
+    title: 'International & National Educational Programs',
+    preview: 'We design innovative educational programs in Morocco, introducing concepts that have rarely, if ever, been offered before.',
+    content: (
+      <>
+        <p className="op-body-text">
+          We design innovative educational programs in Morocco, introducing concepts that
+          have rarely, if ever, been offered before. These programs go beyond traditional
+          classrooms, combining interactive simulations, hands-on projects and workshops
+          that spark creativity and critical thinking. Participants are encouraged to
+          collaborate, experiment and explore new fields in a way that builds both
+          confidence and ambition. By connecting students with peers and mentors, we
+          create a unique environment for personal and academic growth.
+        </p>
+        <div className="op-divider" />
+        <p className="op-body-text">
+          We also organize international trips for selected Moroccan delegations, giving
+          students the chance to experience global educational environments. Participants
+          engage with international peers, attend top ranked conferences and visit
+          institutions — they gain exposure to new perspectives and ideas. These trips
+          broaden horizons, strengthen intercultural understanding and create lasting
+          connections that inspire ambition and global citizenship.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'op3',
+    color: 'gold' as const,
+    num: '03',
+    icon: <Star size={22} />,
+    title: 'Exclusive Opportunities',
+    preview: 'Access to the right opportunity can completely transform a student\'s trajectory.',
+    content: (
+      <>
+        <p className="op-body-text">
+          Access to the right opportunity can completely transform a student's trajectory.
+          Through our network and partnerships, we highlight and facilitate access to
+          selective and high-impact programs that ambitious students should not miss.
+        </p>
+        <p className="op-body-label">We regularly share and connect students with</p>
+        <ul className="op-bullets">
+          <li>Selective summer schools and international programs</li>
+          <li>Leadership initiatives and personal development competitions</li>
+          <li>Unique opportunities designed to challenge, inspire and elevate the next generation of Moroccan youth</li>
+        </ul>
+      </>
+    ),
+  },
+];
+
+function OrientationPillars() {
+  const [open, setOpen] = useState<string | null>(null);
+  const toggle = (id: string) => setOpen(prev => prev === id ? null : id);
+
+  return (
+    <section className="op-section">
+      {/* Risographic ink blobs */}
+      <div className="op-riso-blob op-riso-blob--1" aria-hidden="true" />
+      <div className="op-riso-blob op-riso-blob--2" aria-hidden="true" />
+      <div className="op-riso-blob op-riso-blob--3" aria-hidden="true" />
+
+      <div className="op-container">
+        {/* Header */}
+        <div className="op-header">
+          <span className="op-label">Orientation &amp; Opportunities</span>
+          <h2 className="op-title">
+            Building Futures,<br />
+            <span className="op-title-accent">One Student at a Time</span>
+          </h2>
+          <p className="op-subtitle">
+            Through structured guidance and world-class programs, we prepare Moroccan youth
+            for academic and professional excellence — at home and internationally.
+          </p>
+        </div>
+
+        {/* Accordion cards */}
+        <div className="op-accordion">
+          {orientationItems.map((item) => {
+            const isOpen = open === item.id;
+            return (
+              <div
+                key={item.id}
+                className={`op-card op-card--${item.color}${isOpen ? ' op-card--open' : ''}`}
+              >
+                {/* Noise texture overlay */}
+                <div className="op-card-noise" aria-hidden="true" />
+
+                <button
+                  className="op-card-trigger"
+                  onClick={() => toggle(item.id)}
+                  aria-expanded={isOpen}
+                >
+                  {/* Number */}
+                  <span className="op-card-num">{item.num}</span>
+
+                  {/* Icon */}
+                  <div className={`op-card-icon op-card-icon--${item.color}`}>
+                    {item.icon}
+                  </div>
+
+                  {/* Text */}
+                  <div className="op-card-meta">
+                    <span className="op-card-title">{item.title}</span>
+                    {!isOpen && (
+                      <span className="op-card-preview">{item.preview}</span>
+                    )}
+                  </div>
+
+                  {/* Chevron */}
+                  <div className={`op-card-chevron${isOpen ? ' op-card-chevron--open' : ''}`}>
+                    <ChevronDown size={20} />
+                  </div>
+                </button>
+
+                {/* Body */}
+                <div className={`op-card-body${isOpen ? ' op-card-body--open' : ''}`}>
+                  <div className="op-card-body-inner">
+                    {item.content}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="op-footer">
+          <Link to="/orientation" className="op-cta">
+            Explore All Programs
+            <ArrowRight size={16} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  HomePage
+// ─────────────────────────────────────────────────────────
 export function HomePage() {
   const commissions = [
     {
@@ -94,7 +273,6 @@ export function HomePage() {
         </div>
         <div className="hero-content-wrapper">
           <div className="hero-content">
-            
             <h1 className="hero-title"> </h1>
             <p className="hero-subtitle">
               Building bridges, fostering excellence, and celebrating Moroccan heritage through community engagement and professional development.
@@ -144,7 +322,6 @@ export function HomePage() {
 
           {/* ── THE TREE ── */}
           <div className="tree">
-            {/* Root — UMY logo in the core */}
             <div className="tree-root">
               <div className="tree-root-inner">
                 <img
@@ -152,27 +329,19 @@ export function HomePage() {
                   alt="United Moroccan Youth"
                   className="tree-root-logo"
                 />
-                <span className="tree-root-sub">United Moroccan Youth</span>
+                <span className="tree-root-sub"></span>
               </div>
             </div>
-
-            {/* Trunk */}
             <div className="tree-trunk-line" />
-
-            {/* Split node */}
             <div className="tree-split">
               <div className="tree-split-dot" />
               <div className="tree-split-line tree-split-line--left" />
               <div className="tree-split-line tree-split-line--right" />
             </div>
-
-            {/* Vertical drops into cards */}
             <div className="tree-drops">
               <div className="tree-drop tree-drop--left" />
               <div className="tree-drop tree-drop--right" />
             </div>
-
-            {/* Leaf labels */}
             <div className="tree-leaves">
               <div className="tree-leaf tree-leaf--green">
                 <Compass size={0} />
@@ -190,22 +359,18 @@ export function HomePage() {
             <Link to="/orientation" className="pillar-card pillar-card--green">
               <div className="pillar-card-accent" />
               <div className="pillar-num">01</div>
-
               <div className="pillar-icon-box pillar-icon-box--green">
                 <Compass size={24} />
               </div>
-
               <h3 className="pillar-name">
                 Orientation
                 <span className="pillar-name-amp">&amp; Opportunities</span>
               </h3>
-
               <p className="pillar-desc">
                 Guiding students toward the right academic path, sharing
                 life changing opportunities, and preparing them for
                 international success.
               </p>
-
               <div className="pillar-features">
                 {[
                   { icon: GraduationCap, text: 'Post-Bac Guidance' },
@@ -219,7 +384,6 @@ export function HomePage() {
                   </div>
                 ))}
               </div>
-
               <div className="pillar-cta pillar-cta--green">
                 <span>Explore</span>
                 <ArrowRight size={15} />
@@ -230,21 +394,17 @@ export function HomePage() {
             <Link to="/commissions" className="pillar-card pillar-card--red">
               <div className="pillar-card-accent" />
               <div className="pillar-num">02</div>
-
               <div className="pillar-icon-box pillar-icon-box--red">
                 <Scale size={24} />
               </div>
-
               <h3 className="pillar-name">
                 Civic Leadership
                 <span className="pillar-name-amp">Program</span>
               </h3>
-
               <p className="pillar-desc">
                 Structured commissions tackling politics, diplomacy, and social
                 development building the next generation of engaged citizens.
               </p>
-
               <div className="pillar-features">
                 {[
                   { icon: Landmark,   text: 'Moroccan Politics' },
@@ -258,7 +418,6 @@ export function HomePage() {
                   </div>
                 ))}
               </div>
-
               <div className="pillar-cta pillar-cta--red">
                 <span>Explore</span>
                 <ArrowRight size={15} />
@@ -304,6 +463,11 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ═══════════════════════════════════════════════════
+          ORIENTATION PILLARS ACCORDION
+          ═══════════════════════════════════════════════════ */}
+      <OrientationPillars />
 
       {/* Highlights Section */}
       <section className="highlights-section">

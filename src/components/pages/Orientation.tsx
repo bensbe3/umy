@@ -5,7 +5,7 @@ import { timelineImages } from "../images";
 const IMAGES = {
   hero:         timelineImages["6.webp"],
   scholarships: timelineImages["28.webp"],
-  testPrep:     timelineImages["28.webp"],
+  testPrep:     timelineImages["27.webp"],
   harvard:      timelineImages["7.webp"],
 };
 
@@ -98,10 +98,12 @@ export default function AboutPage() {
         <div className="exposure-content">
           <div className="exposure-left">
             <p className="exposure-intro-body">
-              We believe <strong>exposure builds ambition.</strong> United
-              Moroccan Youth organizes and facilitates international educational
-              trips that allow students to step into the world's most important
-              institutions.
+              We believe <strong>exposure builds ambition.</strong>
+            </p>
+            <p>
+              United Moroccan Youth organizes and facilitates international
+              educational trips that allow students to step into the world's most
+              important institutions.
             </p>
 
             <div className="exposure-feature-list">
@@ -176,7 +178,6 @@ export default function AboutPage() {
         <div className="section-02-layout">
           <div className="section-02-image">
             <img src={IMAGES.scholarships} alt="Scholarship and opportunity programs" />
-            <div className="section-02-image-accent" aria-hidden="true">02</div>
           </div>
           <div className="section-02-content">
             <div className="num-section-inner">
@@ -184,6 +185,8 @@ export default function AboutPage() {
               <div className="ns-head">
                 <span className="section-tag">Opportunities</span>
                 <h2 className="section-heading">
+                <div className="ns-num">02</div>
+
                   Sharing Opportunities<br />
                   <span className="line-red">That Matter.</span>
                 </h2>
@@ -310,7 +313,7 @@ export default function AboutPage() {
           ═══════════════════════════════════════════════════ */}
       <section className="about-cta">
         <div className="cta-bg">
-          <img src={IMAGES.harvard} alt="" aria-hidden="true" />
+          <img src={IMAGES.testPrep} alt="" aria-hidden="true" />
         </div>
 
         <div className="cta-inner">
