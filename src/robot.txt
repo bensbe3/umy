@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
+
+# Block admin route
 Disallow: /a8f4e2c9d7b1
+
+# Block Supabase auth callbacks
+Disallow: /auth/
+
 Sitemap: https://unitedmoroccanyouth.org/sitemap.xml

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase, Actualite } from '../../lib/supabase';
-import { Calendar, ArrowLeft, X } from 'lucide-react';
+import { Calendar, ArrowLeft } from 'lucide-react';
 import { format } from 'date-fns';
 import './ActualiteDetailPage.css';
+
+const BASE_URL = 'https://unitedmoroccanyouth.org';
 
 const COMMISSION_COLORS: Record<string, string> = {
   ir: '#0ea5e9',
@@ -32,6 +34,63 @@ export function ActualiteDetailPage() {
     }
   }, [id]);
 
+  // ✅ Inject NewsArticle JSON-LD schema
+  useEffect(() => {
+    if (!actualite) return;
+
+    const commissionName = COMMISSION_NAMES[actualite.commission_id] || 'Commission';
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-actualite-schema', 'true');
+    script.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: actualite.title,
+      description: (() => {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = actualite.content;
+        return (tmp.textContent || tmp.innerText || '').substring(0, 160);
+      })(),
+      image:
+        actualite.image_url || `${BASE_URL}/images/logoUmy.png`,
+      datePublished: actualite.published_at,
+      dateModified: actualite.updated_at,
+      articleSection: commissionName,
+      publisher: {
+        '@type': 'Organization',
+        name: 'United Moroccan Youth',
+        logo: {
+          '@type': 'ImageObject',
+          url: `${BASE_URL}/images/logoUmy.png`,
+        },
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `${BASE_URL}/actualite/${actualite.id}`,
+      },
+    });
+
+    document.querySelector('script[data-actualite-schema]')?.remove();
+    document.head.appendChild(script);
+
+    // Also update page title & description for this page (no SEOHead used here)
+    document.title = `${actualite.title} | United Moroccan Youth`;
+    const descMeta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (descMeta) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = actualite.content;
+      descMeta.setAttribute(
+        'content',
+        (tmp.textContent || tmp.innerText || '').substring(0, 160)
+      );
+    }
+
+    return () => {
+      document.querySelector('script[data-actualite-schema]')?.remove();
+    };
+  }, [actualite]);
+
   const fetchActualite = async (actualiteId: string) => {
     if (!supabase) {
       setError('Database connection unavailable');
@@ -58,8 +117,7 @@ export function ActualiteDetailPage() {
       }
 
       setActualite(data);
-      
-      // Increment view count
+
       if (data) {
         await supabase
           .from('commission_actualites')
@@ -67,7 +125,6 @@ export function ActualiteDetailPage() {
           .eq('id', data.id);
       }
     } catch (err: any) {
-      console.error('Error fetching actualité:', err);
       setError(err.message || 'Failed to load actualité');
     } finally {
       setLoading(false);

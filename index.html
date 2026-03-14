@@ -5,17 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary -->
-    <title>United Moroccan Youth (UMY) | Engagement civique & leadership jeunesse au Maroc</title>
+    <title>United Moroccan Youth | Engagement civique & leadership jeunesse au Maroc</title>
     <meta
       name="description"
       content="United Moroccan Youth (UMY) est une organisation marocaine dirigée par des jeunes : engagement civique, leadership, orientation académique, opportunités internationales, bourses et initiatives sociales."
     />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="author" content="United Moroccan Youth" />
+    <meta name="author" content="Mohamed Bensbaa" />
     <link rel="canonical" href="https://unitedmoroccanyouth.org" />
 
-    <!-- Language / hreflang (single canonical language versions for now) -->
+    <!--
+      ✅ Google Search Console verification
+      Replace REPLACE_WITH_YOUR_CODE with the meta tag value from:
+      Search Console → Add Property → HTML tag method
+    -->
+    <!-- <meta name="google-site-verification" content="REPLACE_WITH_YOUR_CODE" /> -->
+
+    <!-- Language / hreflang -->
     <link rel="alternate" href="https://unitedmoroccanyouth.org" hreflang="fr" />
     <link rel="alternate" href="https://unitedmoroccanyouth.org" hreflang="en" />
     <link rel="alternate" href="https://unitedmoroccanyouth.org" hreflang="ar" />
@@ -41,23 +48,14 @@
     <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:locale:alternate" content="ar_MA" />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="United Moroccan Youth (UMY)" />
-    <meta
-      name="twitter:description"
-      content="Engagement civique, leadership et opportunités pour la jeunesse marocaine."
-    />
-    <meta name="twitter:image" content="https://unitedmoroccanyouth.org/images/logoUmy.png" />
-    <meta name="twitter:image:alt" content="United Moroccan Youth (UMY) — logo" />
-
-    <!-- Optional (kept short; avoid keyword stuffing) -->
+   
+    <!-- Keywords -->
     <meta
       name="keywords"
-      content="United Moroccan Youth, UMY, jeunesse marocaine, engagement civique, leadership, orientation académique, bourses, opportunités internationales"
+      content="United Moroccan Youth, UMY, jeunesse marocaine, engagement civique, leadership, orientation académique, bourses, opportunités internationales, DécryptMundi, parlement jeunesse Maroc, analyse geopolique, Decryptage marocain, Decryptage geopolique, moroccan youth, jeunesse marocaine, jeunesse maroc, jeunes du maroc, chabab, parti politique"
     />
 
-    <!-- Structured data: Organization + WebSite (page-level JSON-LD is injected by React per route) -->
+    <!-- ✅ Organization JSON-LD — with sameAs social profiles -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -80,17 +78,29 @@
             "contactType": "General inquiries",
             "availableLanguage": ["fr", "en", "ar"]
           }
+        ],
+        "sameAs": [
+          "https://www.instagram.com/unitedmoroccanyouth"
         ]
       }
     </script>
 
+    <!-- ✅ WebSite JSON-LD with SearchAction (enables Google sitelinks search) -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "United Moroccan Youth",
         "alternateName": "UMY",
-        "url": "https://unitedmoroccanyouth.org"
+        "url": "https://unitedmoroccanyouth.org",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://unitedmoroccanyouth.org/decryptmundi?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
       }
     </script>
 

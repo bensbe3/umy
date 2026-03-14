@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const BASE_URL = 'https://unitedmoroccanyouth.org'; // ✅ bon domaine
+const BASE_URL = 'https://unitedmoroccanyouth.org';
 
 interface SEOHeadProps {
   title: string;
@@ -8,6 +8,7 @@ interface SEOHeadProps {
   keywords?: string;
   image?: string;
   url?: string;
+  path?: string; // alias for url — backward compat
   type?: 'website' | 'article';
   author?: string;
   publishedTime?: string;
@@ -20,11 +21,15 @@ export function SEOHead({
   keywords,
   image,
   url,
+  path,
   type = 'website',
   author,
   publishedTime,
   modifiedTime,
 }: SEOHeadProps) {
+  // Accept either `url` or `path` (backward compat with CreditsPage, TermsPage, PrivacyPage)
+  const resolvedUrl = url || path;
+
   useEffect(() => {
     document.title = title;
 
@@ -39,7 +44,7 @@ export function SEOHead({
       el.setAttribute('content', content);
     };
 
-    const canonicalUrl = url ? `${BASE_URL}${url}` : BASE_URL;
+    const canonicalUrl = resolvedUrl ? `${BASE_URL}${resolvedUrl}` : BASE_URL;
     const ogImage = image ?? `${BASE_URL}/images/logoUmy.png`;
 
     // ✅ Basic
@@ -62,7 +67,7 @@ export function SEOHead({
     setMeta('og:type', type, true);
     setMeta('og:url', canonicalUrl, true);
     setMeta('og:image', ogImage, true);
-    setMeta('og:site_name', 'United Moroccan Youth', true); // ✅ nom cohérent
+    setMeta('og:site_name', 'United Moroccan Youth', true);
 
     // ✅ Twitter
     setMeta('twitter:card', 'summary_large_image');
@@ -98,7 +103,6 @@ export function SEOHead({
       },
     };
 
-    // ✅ On cible le bon script (pas celui de l'Organization dans index.html)
     let scriptTag = document.querySelector<HTMLScriptElement>(
       'script[type="application/ld+json"][data-page]'
     );
@@ -110,7 +114,7 @@ export function SEOHead({
     }
     scriptTag.textContent = JSON.stringify(structuredData);
 
-  }, [title, description, keywords, image, url, type, author, publishedTime, modifiedTime]);
+  }, [title, description, keywords, image, resolvedUrl, type, author, publishedTime, modifiedTime]);
 
   return null;
 }

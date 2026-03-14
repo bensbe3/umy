@@ -106,9 +106,10 @@ export function DecryptMundiPage() {
   return (
     <>
       <SEOHead
-        title="DécryptMundi - Analysis & Commentary | United Moroccan Youth"
+        title="DécryptMundi | Analyses & Actualités — United Moroccan Youth"
         description="In-depth analysis, commentary, and investigative journalism from Youth Parliament Morocco's editorial team."
-        keywords="Morocco, parliament, political analysis, commentary, journalism, DécryptMundi, United Moroccan Youth"
+        keywords="géopolitique, Maroc, jeunesse, analyse, diplomatie, DécryptMundi ,Morocco, parliament, political analysis, commentary, journalism, DécryptMundi, United Moroccan Youth"
+        url="/decryptmundi"
         type="website"
       />
 

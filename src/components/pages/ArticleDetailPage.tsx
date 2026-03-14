@@ -7,6 +7,8 @@ import { SEOHead } from '../SEOHead';
 import './ArticleDetailPage.css';
 import '../pages/DecryptMundiPage.css';
 
+const BASE_URL = 'https://unitedmoroccanyouth.org';
+
 export function ArticleDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<Article | null>(null);
@@ -42,6 +44,54 @@ export function ArticleDetailPage() {
     }
   }, [article?.id]);
 
+  // ✅ Inject Article JSON-LD schema
+  useEffect(() => {
+    if (!article) return;
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-article-schema', 'true');
+    script.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: article.excerpt || article.meta_description || '',
+      image:
+        article.featured_image_url ||
+        article.cover_image_url ||
+        `${BASE_URL}/images/logoUmy.png`,
+      author: {
+        '@type': 'Person',
+        name: article.author_name || 'United Moroccan Youth',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'United Moroccan Youth',
+        logo: {
+          '@type': 'ImageObject',
+          url: `${BASE_URL}/images/logoUmy.png`,
+        },
+      },
+      datePublished: article.published_at,
+      dateModified: article.updated_at,
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `${BASE_URL}/decryptmundi/${article.slug}`,
+      },
+      ...(article.category && { articleSection: article.category }),
+      ...(article.meta_keywords && {
+        keywords: article.meta_keywords,
+      }),
+    });
+
+    document.querySelector('script[data-article-schema]')?.remove();
+    document.head.appendChild(script);
+
+    return () => {
+      document.querySelector('script[data-article-schema]')?.remove();
+    };
+  }, [article]);
+
   const fetchArticle = async (articleSlug: string) => {
     if (!supabase) {
       setError('Database connection unavailable');
@@ -49,21 +99,17 @@ export function ArticleDetailPage() {
       return;
     }
 
-    console.log('🔍 Fetching article with slug:', articleSlug);
-
     try {
       // First try by slug
-      let query = supabase
+      const { data: slugData, error: slugError } = await supabase
         .from('decryptmundi_articles')
         .select('*')
         .eq('slug', articleSlug)
-        .eq('status', 'published');
+        .eq('status', 'published')
+        .single();
 
-      const { data: slugData, error: slugError } = await query.single();
-
-      // If slug doesn't work, try by ID (in case slug is actually an ID)
+      // If slug doesn't work, try by ID
       if (slugError && slugError.code === 'PGRST116') {
-        console.log('⚠️ Article not found by slug, trying by ID...');
         const { data: idData, error: idError } = await supabase
           .from('decryptmundi_articles')
           .select('*')
@@ -72,15 +118,12 @@ export function ArticleDetailPage() {
           .single();
 
         if (idError) {
-          console.error('❌ Error fetching by ID:', idError);
           setError('Article not found');
           setLoading(false);
           return;
         }
 
-        console.log('✅ Article found by ID:', idData?.title);
         setArticle(idData);
-        
         if (idData) {
           await supabase
             .from('decryptmundi_articles')
@@ -92,19 +135,11 @@ export function ArticleDetailPage() {
       }
 
       if (slugError) {
-        console.error('❌ Error fetching article:', slugError);
         setError(slugError.message || 'Failed to load article');
         setLoading(false);
         return;
       }
 
-      console.log('✅ Article found by slug:', {
-        title: slugData?.title,
-        slug: slugData?.slug,
-        id: slugData?.id,
-        status: slugData?.status
-      });
-      
       if (!slugData) {
         setError('Article data is empty');
         setLoading(false);
@@ -112,8 +147,6 @@ export function ArticleDetailPage() {
       }
 
       setArticle(slugData);
-      
-      // Increment view count
       if (slugData) {
         await supabase
           .from('decryptmundi_articles')
@@ -121,7 +154,6 @@ export function ArticleDetailPage() {
           .eq('id', slugData.id);
       }
     } catch (err: any) {
-      console.error('❌ Exception fetching article:', err);
       setError(err.message || 'Failed to load article');
     } finally {
       setLoading(false);
@@ -150,14 +182,6 @@ export function ArticleDetailPage() {
           <div className="article-error">
             <h1>Article Not Found</h1>
             <p>{error || 'The article you are looking for does not exist or has been removed.'}</p>
-            <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(139, 0, 0, 0.2)', border: '1px solid rgba(139, 0, 0, 0.5)' }}>
-              <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}><strong>Debug Info:</strong></p>
-              <p style={{ fontSize: '0.75rem', margin: '0.25rem 0' }}>URL Slug: <code>{slug}</code></p>
-              <p style={{ fontSize: '0.75rem', margin: '0.25rem 0' }}>Error: <code>{error || 'No article found'}</code></p>
-              <p style={{ fontSize: '0.75rem', margin: '0.25rem 0', color: '#f0d9c7' }}>
-                Check browser console for detailed error messages.
-              </p>
-            </div>
             <Link to="/decryptmundi" className="btn-back" style={{ marginTop: '1.5rem' }}>
               <ArrowLeft size={18} />
               Back to Articles
@@ -172,10 +196,10 @@ export function ArticleDetailPage() {
     <>
       <SEOHead
         title={article.meta_title || article.title}
-        description={article.meta_description || article.excerpt || 'Read the full article on Youth Parliament Morocco'}
+        description={article.meta_description || article.excerpt || 'Read the full article on United Moroccan Youth'}
         keywords={article.meta_keywords}
         image={article.featured_image_url || article.cover_image_url}
-        url={`${window.location.origin}/decryptmundi/${article.slug}`}
+        url={`/decryptmundi/${article.slug}`}
         type="article"
         author={article.author_name}
         publishedTime={article.published_at}
@@ -193,9 +217,9 @@ export function ArticleDetailPage() {
           </Link>
         </div>
 
-        {/* Layout: Content (70%) + Sidebar (30%) */}
+        {/* Layout */}
         <div className="decryptmundi-layout article-detail-layout">
-          {/* Main Content (70%) */}
+          {/* Main Content */}
           <main className="decryptmundi-main article-detail-main">
             {/* Category & Meta */}
             <div className="article-meta">
@@ -240,7 +264,7 @@ export function ArticleDetailPage() {
               )}
             </div>
 
-            {/* Introduction (Excerpt) */}
+            {/* Excerpt */}
             {article.excerpt && (
               <div className="article-excerpt">{article.excerpt}</div>
             )}
@@ -256,7 +280,7 @@ export function ArticleDetailPage() {
               </div>
             )}
 
-            {/* Content with Drop Cap */}
+            {/* Content */}
             <div className="article-content-wrapper">
               <div
                 className="article-content"
@@ -264,7 +288,7 @@ export function ArticleDetailPage() {
               />
             </div>
 
-            {/* Share Section */}
+            {/* Share */}
             <div className="article-share">
               <h3>Share this article</h3>
               <div className="article-share-buttons">
@@ -273,7 +297,7 @@ export function ArticleDetailPage() {
                     navigator.share?.({
                       title: article.title,
                       text: article.excerpt || '',
-                      url: window.location.href
+                      url: window.location.href,
                     }).catch(() => {
                       navigator.clipboard.writeText(window.location.href);
                       alert('Link copied to clipboard!');
@@ -288,7 +312,7 @@ export function ArticleDetailPage() {
             </div>
           </main>
 
-          {/* Sidebar - Latest Articles (30%) */}
+          {/* Sidebar */}
           <aside className="decryptmundi-sidebar article-detail-sidebar">
             <h2 className="sidebar-title">Latest Articles</h2>
             <div className="sidebar-articles">
@@ -308,7 +332,6 @@ export function ArticleDetailPage() {
 }
 
 function SidebarArticleCard({ article }: { article: Article }) {
-  // Strip HTML tags for preview
   const stripHtml = (html: string) => {
     if (!html) return '';
     const tmp = document.createElement('DIV');
@@ -317,9 +340,8 @@ function SidebarArticleCard({ article }: { article: Article }) {
   };
 
   const previewText = stripHtml(article.excerpt || article.content).substring(0, 80) + '...';
-
   const articlePath = article.slug ? `/decryptmundi/${article.slug}` : `/decryptmundi/${article.id}`;
-  
+
   return (
     <Link to={articlePath} className="sidebar-article-card">
       <div className="sidebar-article-image-wrapper">
@@ -332,8 +354,6 @@ function SidebarArticleCard({ article }: { article: Article }) {
         ) : (
           <div className="sidebar-article-placeholder"></div>
         )}
-        
-        {/* Text Overlay */}
         <div className="sidebar-article-overlay">
           {article.category && (
             <span className="sidebar-article-category">{article.category}</span>
